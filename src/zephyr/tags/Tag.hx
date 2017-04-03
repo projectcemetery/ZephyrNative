@@ -19,17 +19,43 @@
  * THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
-package zephyr.app;
+package zephyr.tags;
+
+import android.view.View;
+import android.content.Context;
 
 /**
- *  Entry point for client app
+ *  Markup object
  */
-@:keepSub
-interface IApplication {
+class Tag {
+
+     /**
+      *  Child tags
+      */
+     var childs : Array<Tag>;
+
+     /**
+      *  Render childrens
+      */
+     function renderChilds (context : Context) : Array<View> {
+        if (childs == null) return [];
+        return [for (i in childs) i.render (context)];
+     }
+
+     /**
+      *  Constructor
+      *  @param tags - 
+      */
+     public function new (?tags : Array<Tag>) {
+         childs = tags;
+     }
 
     /**
-     *  Call when activity ready
-     *  @param context - 
+     *  Render tag to android view
+     *  Virtual
+     *  @return View
      */
-    public function onReady (context : ApplicationContext) : Void;
+    public function render (context : Context) : View {
+        throw "Not implemented";
+    }
 }

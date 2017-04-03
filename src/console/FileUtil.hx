@@ -2,6 +2,8 @@
 package console;
 
 import sys.FileSystem;
+import haxe.io.Path;
+import sys.io.File;
 
 /**
  *  Util for working with files
@@ -12,9 +14,21 @@ class FileUtil {
      *  Copy directory recursive
      */
     public static function copyDir (src : String, dest : String) : Void {
-        // ./src ./work
+        var fullSrc = FileSystem.fullPath (src);
+        var fullDest = FileSystem.fullPath (dest);
+        
+        if (!FileSystem.exists (fullSrc)) throw "Source directory not exists";
+        if (!FileSystem.exists (fullDest)) FileSystem.createDirectory (fullDest);
 
-        if (!FileSystem.exists (src)) throw "Source directory not exists";
-        //FileSystem.createDirectory ();
+        var allFiles = FileSystem.readDirectory (fullSrc);        
+        for (file in allFiles) {            
+            var srcPath = Path.join ([ fullSrc, file ]);
+            var dstPath = Path.join ([ fullDest, file ]);            
+            if (FileSystem.isDirectory (srcPath)) {
+                copyDir (srcPath, dstPath);
+            } else {
+                File.copy (srcPath, dstPath);
+            }
+        }
     }
 }

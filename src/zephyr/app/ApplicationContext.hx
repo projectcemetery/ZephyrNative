@@ -21,12 +21,15 @@
 
 package zephyr.app;
 
+import zephyr.controller.Controller;
+import zephyr.tags.Tag;
+
 class ApplicationContext {
 
     /**
      *  Owner activity
      */
-    var owner : ZephyrApp;
+    var owner : ZephyrActivity;
 
     /**
      *  Controllers
@@ -41,7 +44,7 @@ class ApplicationContext {
     /**
      *  Constructor
      */
-    public function new (owner : ZephyrApp) {
+    public function new (owner : ZephyrActivity) {
         this.owner = owner;
         controllers = new Map<String, Controller> ();
     }

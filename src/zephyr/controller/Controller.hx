@@ -19,17 +19,43 @@
  * THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
-package zephyr.app;
+package zephyr.controller;
+
+import zephyr.app.ApplicationContext;
+import zephyr.page.Page;
 
 /**
- *  Entry point for client app
+ *  View controller
  */
-@:keepSub
-interface IApplication {
+class Controller {    
 
     /**
-     *  Call when activity ready
-     *  @param context - 
+     *  Application context for interacting with app
      */
-    public function onReady (context : ApplicationContext) : Void;
+    @:allow(zephyr.app.ApplicationContext)
+    @:noCompletion
+    var context : ApplicationContext;
+
+    /**
+     *  On enter
+     */
+    public function onEnter () : Void {}
+
+    /**
+     *  On leave
+     */
+    public function onLeave () : Void {}
+
+    /**
+     *  Process back button
+     */
+    public function onBack() : Void {}
+
+    /**
+     *  Show page
+     *  @param page - 
+     */
+    public function setPage (page : Page) : Void {
+        context.setView (page.render ());
+    }
 }

@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-      package="com.example.app"
-      android:versionCode="46"
-      android:versionName="1.46">
+      package="${packageName}"
+      android:versionCode="1"
+      android:versionName="1">
 
-    <application android:label="@string/app_name" android:icon="@drawable/ic_launcher">
-        <activity android:name="ZephyrApp"
-                  android:label="@string/app_name">
+    <application android:label="${projectName}" android:icon="@drawable/ic_launcher">
+        <activity android:name="${projectName}"
+                  android:label="${projectName}">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />

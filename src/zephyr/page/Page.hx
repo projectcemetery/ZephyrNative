@@ -19,17 +19,25 @@
  * THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
-package zephyr.app;
+package zephyr.page;
+
+import zephyr.tags.Tag;
 
 /**
- *  Entry point for client app
+ *  Page view, container for others
  */
-@:keepSub
-interface IApplication {
+class Page {
 
     /**
-     *  Call when activity ready
-     *  @param context - 
+     *  Constructor
      */
-    public function onReady (context : ApplicationContext) : Void;
+    public function new () {}
+
+    /**
+     *  
+     *  @return Tag
+     */
+    public function render () : Tag {
+        throw "Not implemented";
+    }    
 }

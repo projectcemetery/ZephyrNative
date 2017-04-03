@@ -25,6 +25,7 @@ import tink.cli.*;
 import sys.FileSystem;
 import haxe.io.Path;
 import sys.io.File;
+using StringTools;
 
 /**
  *  Command for create new project
@@ -37,24 +38,53 @@ class CreateNewProject {
     var params : Rest<String>;
 
     /**
+     *  Project name
+     */
+    var name : String;
+
+    /**
+     *  Fix AndroidManifest.xml
+     */
+    function fixManifest (path : String) {        
+        var content = File.getContent (path);
+        content = content.replace ("${packageName}", 'com.zephyrnative.${name}');
+        content = content.replace ("${projectName}", name);
+        File.saveContent (path, content);
+    }
+
+    /**
+     *  Fix android.hxml
+     *  @param path - 
+     */
+    function fixAndroidHxml (workPath : String, libPath : String) {
+        var androidHxmlPath = Path.join ([ workPath, "android.hxml" ]);
+        var stringBuff = new StringBuf ();
+        stringBuff.add (File.getContent (androidHxmlPath));
+        var path = Path.join ([ libPath, "libs", "android.jar" ]);
+        stringBuff.add ("\n");
+        stringBuff.add ('-java-lib ${path}');
+        stringBuff.add ("\r\n");
+        var data = stringBuff.toString ();
+        File.saveContent (androidHxmlPath, data);        
+    }
+
+    /**
      *  Constructor
      */
     public function new (params : Rest<String>) {
+        if (params.length < 1) throw "Wrong parameters";
         this.params = params;
+        name = params[0];
+        name = name.replace (" ", "");
+        var upper = name.charAt(0).toUpperCase ();
+        name = upper + name.substr (1, name.length);        
     }
 
     /**
      *  Run command
      */
     public function run () {
-        // Создать рабочий каталог        
-        // Получить каталог библиотеки
-        // Скопировать из Bundle в рабочий каталог: native
-        // Поправить манифест: название, activity
-        // Сгенерировать файл Activity от ZephyrActivity        
-
-        try {
-            var name = params[0];
+        try {            
             var launchDir = params[params.length - 1];
             var workDir = Path.join ([ launchDir, name ]);
             var libDir = FileSystem.fullPath (".");
@@ -62,9 +92,15 @@ class CreateNewProject {
             FileSystem.createDirectory (workDir);            
 
             var srcDir = Path.join ([ libDir, "bundle" ]);
-            var destDir = Path.join ([ workDir, "bundle" ]);            
+            var destDir = workDir;           
             FileUtil.copyDir (srcDir, destDir);
 
+            // Fix manifest
+            var manifestPath = Path.join ([ workDir, "build", "android", "src", "main", "AndroidManifest.xml" ]);
+            fixManifest (manifestPath);
+
+            // Add java lib to android.hxml            
+            fixAndroidHxml (workDir, libDir);            
 
             trace ("Project created");
         } catch (e : Dynamic) {
