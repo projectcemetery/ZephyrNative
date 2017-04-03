@@ -1,0 +1,13 @@
+{
+  "name": "ZephyrNative",
+  "url" : "https://github.com/RapidFingers/ZephyrNative",
+  "license": "MIT",
+  "tags": ["mobile"],
+  "description": "Framework for rapid mobile development",
+  "version": "0.0.1",
+  "classPath": "src/",
+  "releasenote": "Initial release",
+  "contributors": ["Grabli66"],
+  "dependencies": {
+  }
+}

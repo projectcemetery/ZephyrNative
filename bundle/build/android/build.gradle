@@ -1,0 +1,38 @@
+buildscript {
+    repositories {
+        maven { url "http://jcenter.bintray.com" }
+        jcenter()
+    }
+    dependencies {
+        classpath 'com.android.tools.build:gradle:2.1.2'
+    }
+}
+
+apply plugin: 'android'
+
+android {
+    compileSdkVersion 21
+    buildToolsVersion '25.0.2'
+
+    defaultConfig {
+        minSdkVersion 19
+        targetSdkVersion 25
+    }
+
+    buildTypes {
+    /*    release {
+            runProguard false
+            proguardFile getDefaultProguardFile('proguard-android.txt')
+        }*/
+    }
+}
+
+allprojects {
+    repositories {
+        maven { url "http://jcenter.bintray.com" }
+    }
+}
+
+dependencies {
+    
+}

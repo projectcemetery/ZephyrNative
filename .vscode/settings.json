@@ -1,0 +1,6 @@
+{
+    "haxe.displayConfigurations": [
+        ["build.hxml"],
+        ["console.hxml"],
+    ]
+}
