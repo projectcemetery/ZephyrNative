@@ -80,7 +80,7 @@ class ${projectName} implements IApplication {
     /**
      *  Fix AndroidManifest.xml
      */
-    function fixManifest (path : String) {        
+    function fixManifest (path : String) {
         var content = File.getContent (path);
         content = content.replace ("${packageName}", project.settings.packageName);
         content = content.replace ("${projectName}", project.settings.name);
@@ -150,7 +150,7 @@ class ${projectName} implements IApplication {
             var srcDir = Path.join ([ libDir, "bundle" ]);
             var destDir = workDir;
             trace ('Coping bundle files from ${srcDir} to ${destDir}');
-            FileUtil.copyDir (srcDir, destDir);
+            FileUtil.copyFromDir (srcDir, destDir);
 
             // Write project file
             trace ("Writing project settings");
@@ -168,6 +168,8 @@ class ${projectName} implements IApplication {
             // Write Main.hx
             trace ("Write Main.hx");
             writeMain (workDir);
+
+            //             
 
             trace ("Project created");
         } catch (e : Dynamic) {

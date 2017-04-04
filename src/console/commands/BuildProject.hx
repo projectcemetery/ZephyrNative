@@ -30,17 +30,16 @@ class BuildProject {
     /**
      *  Run build
      */
-    public function run () {
+    public function run (isInstall : Bool = false) {
         try {
             var workPath = params[0];            
             var activityText = FileUtil.getTemplate ("ActivityText.java");
             Sys.setCwd (workPath);
             var project = ProjectSettings.load (ProjectSettings.projectNameDef);
-            var proc = new Process ("haxe", [ProjectSettings.androidHxmlName]);
-            var code = proc.exitCode (true);
-            if (code != 0) {
-                trace (proc.stderr.readLine());
-            }
+            trace ("Compiling haxe code");            
+            ProcessHelper.launch ("haxe", [ProjectSettings.androidHxmlName], function (error : String) {
+                if (error != null) throw (error);
+            });
 
             var activityName = project.getActivityName ();
             var text = activityText.replace (ProjectSettings.activityNameParam, activityName);
@@ -52,6 +51,21 @@ class BuildProject {
 
             var androidProjPath = Path.join ([workPath, "build", "android"]);
             Sys.setCwd (androidProjPath);
+
+            // Only build
+            if (!isInstall) {
+                trace ("Assembling APK");            
+                ProcessHelper.launch ("./gradlew", ["assembleDebug"], function (error : String) {
+                    if (error != null) throw (error);
+                });
+                trace ("Build complete");
+            } else {
+                trace ("Assembling and installing APK");            
+                ProcessHelper.launch ("./gradlew", ["installDebug"], function (error : String) {
+                    if (error != null) throw (error);
+                });
+                trace ("Installation complete");
+            }            
         } catch (e : Dynamic) {
             trace (e);
             trace ("Can't build project");

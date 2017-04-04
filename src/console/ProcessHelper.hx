@@ -21,52 +21,42 @@
 
 package console;
 
-import tink.cli.*;
-import tink.Cli;
-import console.commands.CreateNewProject;
-import console.commands.BuildProject;
+import sys.io.Process;
 
-/**
- *  Process console commands
- */
-@:alias(false)
-class ConsoleCommand {
+class ProcessHelper {
 
     /**
-     *  Create project flag
+     *  Launch process and call with error text if exists
+     *  @param call - 
+     *  @param cmd - 
+     *  @param args - 
      */
-    @:flag('-create')
-	public var create : Bool = false;
-
-    /**
-     *  Build project flag
-     */
-    @:flag('-build')
-	public var build : Bool = false;
-
-    /**
-     *  Build project flag
-     */
-    @:flag('-install')
-	public var install : Bool = false;
-
-    /**
-     *  Constructor
-     */
-    public function new() {}
-
-    @:defaultCommand
-	public function run(rest : Rest<String>) {
-        if (create) {
-            new CreateNewProject (rest).run ();
-        } else if (build) {
-            new BuildProject (rest).run ();
-        } else if (install) {
-            new BuildProject (rest).run (true);
-        }        
-        else {
-            var doc = Cli.getDoc(this);
-            trace (doc);
+    public static function launch (cmd : String, args : Array<String>, call : String -> Void) {        
+        var proc : Process = {
+            if (args.length > 0) {
+                new Process (cmd, args);
+            } else {
+                new Process (cmd);
+            }
+        };
+        var code = proc.exitCode (true);
+        var sb = new StringBuf ();
+        if (code != 0) {
+            try {
+                var dat = proc.stderr.readLine ();
+                sb.add (dat);
+                sb.add ("\n");
+                while (dat != null) {
+                    dat = proc.stderr.readLine ();
+                    sb.add (dat);
+                    sb.add ("\n");
+                }
+            } catch (e : Dynamic) {}
         }
+        if (sb.length < 1) {
+            call (null);
+        } else {
+            call (sb.toString ());
+        }        
     }
 }
