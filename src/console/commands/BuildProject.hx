@@ -49,6 +49,9 @@ class BuildProject {
 
             var path = Path.join ([workPath,"build", "android", "src", "main", "java", "src" ,"zephyr", '${activityName}.java']);
             File.saveContent (path, text);
+
+            var androidProjPath = Path.join ([workPath, "build", "android"]);
+            Sys.setCwd (androidProjPath);
         } catch (e : Dynamic) {
             trace (e);
             trace ("Can't build project");
