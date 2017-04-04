@@ -24,7 +24,6 @@ package zephyr.app;
 /**
  *  Entry point for client app
  */
-@:keepSub
 interface IApplication {
 
     /**

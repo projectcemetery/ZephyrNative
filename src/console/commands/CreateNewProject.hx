@@ -43,11 +43,54 @@ class CreateNewProject {
     var name : String;
 
     /**
+     *  Project package name
+     */
+    var packageName : String = "zephyr";
+
+    /**
+     *  android.hxml template
+     */
+    var androidHxml : String = 
+"-cp src
+-D analyzer-optimize
+-D no-compilation
+-dce full
+-lib ZephyrNative
+-java ./out
+${packageName}
+${javaLibs}";
+
+    var mainText : String = 
+"package ${packageName};
+
+import zephyr.app.IApplication;
+import zephyr.app.ApplicationContext;
+
+/**
+ *  Entry point for Zephyr Application
+ */
+@:keep
+class Main implements IApplication {
+
+    /**
+     *  Call when application ready
+     *  @param context
+     */
+    public function onReady (context : ApplicationContext) : Void {
+        // Register controller: 
+        // context.registerController (MyControllerClass);
+        // Navigate to controller:
+        // context.navigate (MyControllerClass);
+    }
+}
+";
+
+    /**
      *  Fix AndroidManifest.xml
      */
     function fixManifest (path : String) {        
         var content = File.getContent (path);
-        content = content.replace ("${packageName}", 'com.zephyrnative.${name}');
+        content = content.replace ("${packageName}", packageName);
         content = content.replace ("${projectName}", name);
         File.saveContent (path, content);
     }
@@ -56,16 +99,28 @@ class CreateNewProject {
      *  Fix android.hxml
      *  @param path - 
      */
-    function fixAndroidHxml (workPath : String, libPath : String) {
+    function writeAndroidHxml (workPath : String, libPath : String) {
         var androidHxmlPath = Path.join ([ workPath, "android.hxml" ]);
-        var stringBuff = new StringBuf ();
-        stringBuff.add (File.getContent (androidHxmlPath));
-        var path = Path.join ([ libPath, "libs", "android.jar" ]);
-        stringBuff.add ("\n");
-        stringBuff.add ('-java-lib ${path}');
-        stringBuff.add ("\r\n");
-        var data = stringBuff.toString ();
-        File.saveContent (androidHxmlPath, data);        
+        var libData = Path.join ([ libPath, "libs", "android.jar" ]);
+        androidHxml = androidHxml.replace ("${packageName}", '${packageName}.Main');
+        androidHxml = androidHxml.replace ("${javaLibs}", '-java-lib ${libData}');        
+
+        File.saveContent (androidHxmlPath, androidHxml);
+    }
+
+    /**
+     *  Write Main.hx
+     *  @param workPath - 
+     */
+    function writeMain (workPath : String) {
+        var packPaths = packageName.split (".");
+
+        var path = [workPath, "src"].concat (packPaths);        
+        var packagePath = Path.join (path);
+        FileSystem.createDirectory (packagePath);        
+        var filePath = Path.join ([packagePath, "Main.hx"]);        
+        var text = mainText.replace ("${packageName}", packageName);
+        File.saveContent (filePath, text);
     }
 
     /**
@@ -89,18 +144,26 @@ class CreateNewProject {
             var workDir = Path.join ([ launchDir, name ]);
             var libDir = FileSystem.fullPath (".");
             if (FileSystem.exists (workDir)) throw 'Folder ${workDir} already exists';
+            trace ('Creating directory ${workDir}');
             FileSystem.createDirectory (workDir);            
 
             var srcDir = Path.join ([ libDir, "bundle" ]);
-            var destDir = workDir;           
+            var destDir = workDir;
+            trace ('Coping bundle files from ${srcDir} to ${destDir}');
             FileUtil.copyDir (srcDir, destDir);
 
             // Fix manifest
+            trace ("Fixing android manifest");
             var manifestPath = Path.join ([ workDir, "build", "android", "src", "main", "AndroidManifest.xml" ]);
             fixManifest (manifestPath);
 
-            // Add java lib to android.hxml            
-            fixAndroidHxml (workDir, libDir);            
+            // Add java lib to android.hxml
+            trace ("Writing android.hxml");
+            writeAndroidHxml (workDir, libDir);
+
+            // Write Main.hx
+            trace ("Write Main.hx");
+            writeMain (workDir);
 
             trace ("Project created");
         } catch (e : Dynamic) {

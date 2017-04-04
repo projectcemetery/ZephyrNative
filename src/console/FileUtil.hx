@@ -14,8 +14,8 @@ class FileUtil {
      *  Copy directory recursive
      */
     public static function copyDir (src : String, dest : String) : Void {
-        var fullSrc = FileSystem.fullPath (src);
-        var fullDest = FileSystem.fullPath (dest);
+        var fullSrc = FileSystem.absolutePath (src);                
+        var fullDest = FileSystem.absolutePath (dest);        
         
         if (!FileSystem.exists (fullSrc)) throw "Source directory not exists";
         if (!FileSystem.exists (fullDest)) FileSystem.createDirectory (fullDest);
