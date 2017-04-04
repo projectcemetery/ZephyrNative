@@ -34,6 +34,14 @@ class ZephyrActivity extends android.app.Activity {
     private static inline var MAIN_NAME = "com.example.app.Main";
 
     /**
+     *  Return entry point class
+     *  @return Class<T>
+     */
+    function getEntryPoint () : String {
+        throw "Not implemented";
+    }
+
+    /**
      *  On activity create
      *  @param b - 
      */
@@ -41,7 +49,7 @@ class ZephyrActivity extends android.app.Activity {
     override function onCreate (b : Bundle) : Void {
         super.onCreate (b);        
         this.requestWindowFeature (Window.FEATURE_NO_TITLE);
-        var cls = Type.resolveClass (ZephyrActivity.MAIN_NAME);
+        var cls = Type.resolveClass (getEntryPoint ());
         if (cls != null) {
             var inst : IApplication = cast Type.createEmptyInstance (cls);
             inst.onReady (new ApplicationContext (this));

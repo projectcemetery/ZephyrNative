@@ -37,28 +37,11 @@ class CreateNewProject {
      */
     var params : Rest<String>;
 
-    /**
-     *  Project name
-     */
-    var name : String;
 
     /**
-     *  Project package name
+     *  Project settings
      */
-    var packageName : String = "zephyr";
-
-    /**
-     *  android.hxml template
-     */
-    var androidHxml : String = 
-"-cp src
--D analyzer-optimize
--D no-compilation
--dce full
--lib ZephyrNative
--java ./out
-${packageName}
-${javaLibs}";
+    var project : ProjectSettings;
 
     var mainText : String = 
 "package ${packageName};
@@ -70,7 +53,7 @@ import zephyr.app.ApplicationContext;
  *  Entry point for Zephyr Application
  */
 @:keep
-class Main implements IApplication {
+class ${projectName} implements IApplication {
 
     /**
      *  Call when application ready
@@ -86,12 +69,22 @@ class Main implements IApplication {
 ";
 
     /**
+     *  Write project
+     *  @param workPath - 
+     */
+    function writeProjectFile (workPath : String) {
+        var path = Path.join ([workPath, ProjectSettings.projectNameDef]);
+        project.save (path);
+    }
+
+    /**
      *  Fix AndroidManifest.xml
      */
     function fixManifest (path : String) {        
         var content = File.getContent (path);
-        content = content.replace ("${packageName}", packageName);
-        content = content.replace ("${projectName}", name);
+        content = content.replace ("${packageName}", project.settings.packageName);
+        content = content.replace ("${projectName}", project.settings.name);
+        content = content.replace ("${activityName}", project.getActivityName ());
         File.saveContent (path, content);
     }
 
@@ -101,11 +94,8 @@ class Main implements IApplication {
      */
     function writeAndroidHxml (workPath : String, libPath : String) {
         var androidHxmlPath = Path.join ([ workPath, "android.hxml" ]);
-        var libData = Path.join ([ libPath, "libs", "android.jar" ]);
-        androidHxml = androidHxml.replace ("${packageName}", '${packageName}.Main');
-        androidHxml = androidHxml.replace ("${javaLibs}", '-java-lib ${libData}');        
-
-        File.saveContent (androidHxmlPath, androidHxml);
+        var text = project.generateAndroidHxml (libPath);
+        File.saveContent (androidHxmlPath, text);
     }
 
     /**
@@ -113,13 +103,14 @@ class Main implements IApplication {
      *  @param workPath - 
      */
     function writeMain (workPath : String) {
-        var packPaths = packageName.split (".");
+        var packPaths = project.settings.packageName.split (".");
 
         var path = [workPath, "src"].concat (packPaths);        
         var packagePath = Path.join (path);
         FileSystem.createDirectory (packagePath);        
-        var filePath = Path.join ([packagePath, "Main.hx"]);        
-        var text = mainText.replace ("${packageName}", packageName);
+        var filePath = Path.join ([packagePath, '${project.settings.name}.hx']); 
+        var text = mainText.replace (ProjectSettings.packageNameParam, project.settings.packageName);
+        text = text.replace (ProjectSettings.projectNameParam, project.settings.name);
         File.saveContent (filePath, text);
     }
 
@@ -127,12 +118,21 @@ class Main implements IApplication {
      *  Constructor
      */
     public function new (params : Rest<String>) {
-        if (params.length < 1) throw "Wrong parameters";
+        if (params.length < 2) throw "Wrong parameters";
         this.params = params;
-        name = params[0];
+
+        var name = params[0];
         name = name.replace (" ", "");
         var upper = name.charAt(0).toUpperCase ();
-        name = upper + name.substr (1, name.length);        
+        name = upper + name.substr (1, name.length);
+
+        // TODO: validate package
+        var packageName = "com.zephyr";
+        if (params.length >= 3) {
+            packageName = params[1];
+        }        
+
+        this.project = new ProjectSettings (name, packageName);
     }
 
     /**
@@ -141,7 +141,7 @@ class Main implements IApplication {
     public function run () {
         try {            
             var launchDir = params[params.length - 1];
-            var workDir = Path.join ([ launchDir, name ]);
+            var workDir = Path.join ([ launchDir, project.settings.name ]);
             var libDir = FileSystem.fullPath (".");
             if (FileSystem.exists (workDir)) throw 'Folder ${workDir} already exists';
             trace ('Creating directory ${workDir}');
@@ -152,10 +152,14 @@ class Main implements IApplication {
             trace ('Coping bundle files from ${srcDir} to ${destDir}');
             FileUtil.copyDir (srcDir, destDir);
 
+            // Write project file
+            trace ("Writing project settings");
+            writeProjectFile (workDir);
+
             // Fix manifest
             trace ("Fixing android manifest");
             var manifestPath = Path.join ([ workDir, "build", "android", "src", "main", "AndroidManifest.xml" ]);
-            fixManifest (manifestPath);
+            fixManifest (manifestPath);            
 
             // Add java lib to android.hxml
             trace ("Writing android.hxml");

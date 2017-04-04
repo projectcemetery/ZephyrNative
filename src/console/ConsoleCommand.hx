@@ -24,6 +24,7 @@ package console;
 import tink.cli.*;
 import tink.Cli;
 import console.commands.CreateNewProject;
+import console.commands.BuildProject;
 
 /**
  *  Process console commands
@@ -31,16 +32,31 @@ import console.commands.CreateNewProject;
 @:alias(false)
 class ConsoleCommand {
 
+    /**
+     *  Create project flag
+     */
     @:flag('-create')
 	public var create : Bool = false;
 
+    /**
+     *  Build project flag
+     */
+    @:flag('-build')
+	public var build : Bool = false;
+
+    /**
+     *  Constructor
+     */
     public function new() {}
 
     @:defaultCommand
 	public function run(rest : Rest<String>) {
         if (create) {
             new CreateNewProject (rest).run ();
-        } else {
+        } else if (build) {
+            new BuildProject (rest).run ();
+        }        
+        else {
             var doc = Cli.getDoc(this);
             trace (doc);
         }

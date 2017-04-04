@@ -31,4 +31,13 @@ class FileUtil {
             }
         }
     }
+
+    /**
+     *  Return template text
+     *  @param name - 
+     */
+    public static function getTemplate (name : String) : String {
+        var path = Path.join (["templates", name]);
+        return File.getContent (path);
+    }
 }
