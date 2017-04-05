@@ -16,7 +16,7 @@ class FileUtil {
      */
     public static function copyFromDir (src : String, dest : String) : Void {
         if (Sys.systemName () == "Windows") {
-            /*var fullSrc = FileSystem.absolutePath (src);
+            var fullSrc = FileSystem.absolutePath (src);
             var fullDest = FileSystem.absolutePath (dest);
             
             if (!FileSystem.exists (fullSrc)) throw "Source directory not exists";
@@ -27,12 +27,11 @@ class FileUtil {
                 var srcPath = Path.join ([ fullSrc, file ]);
                 var dstPath = Path.join ([ fullDest, file ]);            
                 if (FileSystem.isDirectory (srcPath)) {
-                    copyDir (srcPath, dstPath);
+                    copyFromDir (srcPath, dstPath);
                 } else {
                     File.copy (srcPath, dstPath);
                 }
-            }*/
-            throw "TODO copy on windows";
+            }
         } else {
             var oldPath = Sys.getCwd ();
             Sys.setCwd (src);

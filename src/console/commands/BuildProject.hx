@@ -52,16 +52,24 @@ class BuildProject {
             var androidProjPath = Path.join ([workPath, "build", "android"]);
             Sys.setCwd (androidProjPath);
 
-            // Only build
+            var cmd = {
+                if (Sys.systemName () == "Windows") {
+                    "gradlew.bat";
+                } else {
+                    "./gradlew";
+                }
+            }
+
+            // Only build            
             if (!isInstall) {
                 trace ("Assembling APK");            
-                ProcessHelper.launch ("./gradlew", ["assembleDebug"], function (error : String) {
+                ProcessHelper.launch (cmd, ["assembleDebug"], function (error : String) {
                     if (error != null) throw (error);
                 });
                 trace ("Build complete");
             } else {
-                trace ("Assembling and installing APK");            
-                ProcessHelper.launch ("./gradlew", ["installDebug"], function (error : String) {
+                trace ("Assembling and installing APK");                
+                ProcessHelper.launch (cmd, ["installDebug"], function (error : String) {
                     if (error != null) throw (error);
                 });
                 trace ("Installation complete");
