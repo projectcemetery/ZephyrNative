@@ -23,6 +23,7 @@ package zephyr.tags;
 
 import android.view.View;
 import android.content.Context;
+import zephyr.style.Style;
 
 /**
  *  Markup object
@@ -35,9 +36,22 @@ class Tag extends TagContainer {
      public var id (default, null) : String;
 
      /**
-      *  Css styles
+      *  Css classes
       */
      public var styles (default, null) : Array<String>;
+
+     /**
+      *  Css style
+      */
+     public var style : Style;
+
+     /**
+      *  Parse css classes string. Like: mystyle another_style good_style
+      *  @param cls - 
+      */
+     function parseCssOption (cls : String) {
+        styles = cls.split (" ");
+     }
 
      /**
       *  Render childrens
@@ -51,9 +65,15 @@ class Tag extends TagContainer {
       *  Constructor
       *  @param tags - 
       */
-     public function new (?tags : Array<Tag>) {
+     public function new (?options : TagOptions, ?tags : Array<Tag>) {
          super (tags);
+         id = "";
          styles = new Array<String> ();
+
+         if (options != null) {
+             if (options.id != null) id = options.id;
+             if (options.css != null) parseCssOption (options.css);
+         }         
      }
 
     /**
@@ -87,11 +107,4 @@ class Tag extends TagContainer {
 
         return if (res.length > 0) res else null;
     }
-
-    /**
-     *  Apply css style to tag
-     */
-    /*public function applyStyle (style : StyleSheet) {
-
-    }*/
 }

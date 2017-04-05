@@ -45,6 +45,8 @@ class TagContainer {
      *  @return Tag
      */
     public function findById (id : String) : Tag {
+        if (id.length < 1) return null;
+        
         // First search in childs
         for (t in childs) {            
             if (t.id == id) return t;

@@ -19,58 +19,30 @@
  * THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
-package console;
-
-import tink.cli.*;
-import tink.Cli;
-import console.commands.CreateNewProject;
-import console.commands.BuildProject;
+package zephyr.style;
 
 /**
- *  Process console commands
+ *  Style rule. Like: #submitButton .green .flat
  */
-@:alias(false)
-class ConsoleCommand {
+typedef StyleRule = {
 
     /**
-     *  Create project flag
+     *  Id of Tag
      */
-    @:flag('-create')
-	public var create : Bool = false;
+    var id : String;
 
     /**
-     *  Build project flag
+     *  Name of Tag
      */
-    @:flag('-build')
-	public var build : Array<String>;
+    var tagName : String;
 
     /**
-     *  Build project flag
+     *  Style names
      */
-    @:flag('-install')
-	public var install : Array<String>;
+    var styles : Array<String>;
 
     /**
-     *  Constructor
+     *  Style data
      */
-    public function new() {}
-
-    @:defaultCommand
-	public function run(rest : Rest<String>) {        
-        try {
-            if (create) {
-                new CreateNewProject (rest).run ();
-            } else if (build != null) {
-                new BuildProject (build, rest).run ();
-            } else if (install != null) {
-                new BuildProject (install, rest).run (true);
-            }
-            else {
-                var doc = Cli.getDoc(this);
-                Logger.info (doc);
-            }
-        } catch (e : Dynamic) {
-            Logger.error (e);
-        }
-    }
+    var style : Style;
 }

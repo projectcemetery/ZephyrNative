@@ -21,56 +21,26 @@
 
 package console;
 
-import tink.cli.*;
-import tink.Cli;
-import console.commands.CreateNewProject;
-import console.commands.BuildProject;
+import neko.Lib;
 
 /**
- *  Process console commands
+ *  Log text
  */
-@:alias(false)
-class ConsoleCommand {
+class Logger {
 
     /**
-     *  Create project flag
+     *  Log info line
+     *  @param e - 
      */
-    @:flag('-create')
-	public var create : Bool = false;
+    public static inline function info (e : String) {
+        Lib.println (e);
+    }
 
     /**
-     *  Build project flag
+     *  Log error line
+     *  @param e - 
      */
-    @:flag('-build')
-	public var build : Array<String>;
-
-    /**
-     *  Build project flag
-     */
-    @:flag('-install')
-	public var install : Array<String>;
-
-    /**
-     *  Constructor
-     */
-    public function new() {}
-
-    @:defaultCommand
-	public function run(rest : Rest<String>) {        
-        try {
-            if (create) {
-                new CreateNewProject (rest).run ();
-            } else if (build != null) {
-                new BuildProject (build, rest).run ();
-            } else if (install != null) {
-                new BuildProject (install, rest).run (true);
-            }
-            else {
-                var doc = Cli.getDoc(this);
-                Logger.info (doc);
-            }
-        } catch (e : Dynamic) {
-            Logger.error (e);
-        }
+    public static inline function error (e : String) {
+        Lib.println (e);
     }
 }

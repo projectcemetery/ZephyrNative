@@ -144,37 +144,37 @@ class ${projectName} implements IApplication {
             var workDir = Path.join ([ launchDir, project.settings.name ]);
             var libDir = FileSystem.fullPath (".");
             if (FileSystem.exists (workDir)) throw 'Folder ${workDir} already exists';
-            trace ('Creating directory ${workDir}');
+            Logger.info ('Creating directory ${workDir}');
             FileSystem.createDirectory (workDir);            
 
             var srcDir = Path.join ([ libDir, "bundle" ]);
             var destDir = workDir;
-            trace ('Coping bundle files from ${srcDir} to ${destDir}');
+            Logger.info ('Coping bundle files from ${srcDir} to ${destDir}');
             FileUtil.copyFromDir (srcDir, destDir);
 
             // Write project file
-            trace ("Writing project settings");
+            Logger.info ("Writing project settings");
             writeProjectFile (workDir);
 
             // Fix manifest
-            trace ("Fixing android manifest");
+            Logger.info ("Fixing android manifest");
             var manifestPath = Path.join ([ workDir, "build", "android", "src", "main", "AndroidManifest.xml" ]);
             fixManifest (manifestPath);            
 
             // Add java lib to android.hxml
-            trace ("Writing android.hxml");
+            Logger.info ("Writing android.hxml");
             writeAndroidHxml (workDir, libDir);
 
             // Write Main.hx
-            trace ("Write Main.hx");
+            Logger.info ("Write Main.hx");
             writeMain (workDir);
 
             //             
 
-            trace ("Project created");
+            Logger.info ("Project created");
         } catch (e : Dynamic) {
-            trace (e);
-            trace ("Can't create new project");
+            Logger.info (e);
+            Logger.info ("Can't create new project");
         }        
     }
 }

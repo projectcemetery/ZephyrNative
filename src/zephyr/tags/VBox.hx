@@ -11,8 +11,8 @@ class VBox extends Tag {
       *  Constructor
       *  @param tags - 
       */
-     public function new (?tags : Array<Tag>) {
-         super (tags);
+     public function new (?options : TagOptions, ?tags : Array<Tag>) {
+         super (options, tags);
      }
 
      /**

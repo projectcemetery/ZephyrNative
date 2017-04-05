@@ -21,56 +21,13 @@
 
 package console;
 
-import tink.cli.*;
-import tink.Cli;
-import console.commands.CreateNewProject;
-import console.commands.BuildProject;
-
 /**
- *  Process console commands
+ *  Build targets
  */
-@:alias(false)
-class ConsoleCommand {
+@:enum
+abstract Target(String) from String to String {    
+    var Android = "android";
+    var Web = "web";
+    var Ios = "ios";
 
-    /**
-     *  Create project flag
-     */
-    @:flag('-create')
-	public var create : Bool = false;
-
-    /**
-     *  Build project flag
-     */
-    @:flag('-build')
-	public var build : Array<String>;
-
-    /**
-     *  Build project flag
-     */
-    @:flag('-install')
-	public var install : Array<String>;
-
-    /**
-     *  Constructor
-     */
-    public function new() {}
-
-    @:defaultCommand
-	public function run(rest : Rest<String>) {        
-        try {
-            if (create) {
-                new CreateNewProject (rest).run ();
-            } else if (build != null) {
-                new BuildProject (build, rest).run ();
-            } else if (install != null) {
-                new BuildProject (install, rest).run (true);
-            }
-            else {
-                var doc = Cli.getDoc(this);
-                Logger.info (doc);
-            }
-        } catch (e : Dynamic) {
-            Logger.error (e);
-        }
-    }
 }

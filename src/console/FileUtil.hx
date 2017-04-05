@@ -38,7 +38,7 @@ class FileUtil {
             var proc = new Process ("cp", ["-a", ".", dest]);
             var code = proc.exitCode (true);
             if (code != 0) {
-                trace (proc.stderr.readLine ());
+                Logger.info (proc.stderr.readLine ());
             }
             Sys.setCwd (oldPath);
         }

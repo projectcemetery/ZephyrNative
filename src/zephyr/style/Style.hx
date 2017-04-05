@@ -19,58 +19,20 @@
  * THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
-package console;
-
-import tink.cli.*;
-import tink.Cli;
-import console.commands.CreateNewProject;
-import console.commands.BuildProject;
+package zephyr.style;
 
 /**
- *  Process console commands
+ *  Style data for rendering Tag
  */
-@:alias(false)
-class ConsoleCommand {
+class Style {
 
     /**
-     *  Create project flag
+     *  Background color
      */
-    @:flag('-create')
-	public var create : Bool = false;
-
-    /**
-     *  Build project flag
-     */
-    @:flag('-build')
-	public var build : Array<String>;
-
-    /**
-     *  Build project flag
-     */
-    @:flag('-install')
-	public var install : Array<String>;
+    public var backgroundColor : Null<Int>;
 
     /**
      *  Constructor
      */
-    public function new() {}
-
-    @:defaultCommand
-	public function run(rest : Rest<String>) {        
-        try {
-            if (create) {
-                new CreateNewProject (rest).run ();
-            } else if (build != null) {
-                new BuildProject (build, rest).run ();
-            } else if (install != null) {
-                new BuildProject (install, rest).run (true);
-            }
-            else {
-                var doc = Cli.getDoc(this);
-                Logger.info (doc);
-            }
-        } catch (e : Dynamic) {
-            Logger.error (e);
-        }
-    }
+    public function new () {}
 }
