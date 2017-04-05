@@ -19,38 +19,39 @@
  * THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
-package zephyr.page;
+package zephyr.tags.textview;
 
-import zephyr.tags.Tag;
-import zephyr.tags.TagContainer;
+import android.view.View;
+import android.widget.LinearLayout;
+import android.widget.LinearLayout.LinearLayout_LayoutParams;
+import android.content.Context;
 
 /**
- *  Page view, container for others
+ *  Tag for TextView 
  */
-class Page extends TagContainer {
+class TextView extends Tag {
 
     /**
-     *  Constructor
+     *  Options for textview rendering
      */
-    public function new () {
-        super (null);
-    }
+    var options : TextViewOptions;
 
     /**
-     *  Get page layout
-     *  @return Tag
-     */
-    public function render () : Tag {
-        var tag = layout ();
-        childs = [tag];
-        return tag;
-    }
+      *  Constructor 
+      */
+     public function new (options : TextViewOptions) {
+         super (null);
+         this.options = options;
+     }
 
-    /**
-     *  
-     *  @return Tag
-     */
-    public function layout () : Tag {
-        throw "Not implemented";
-    }    
+     /**
+      *  Render TextView
+      *  @param context - 
+      *  @return View
+      */
+     override public function render (context : Context) : View {
+         var textView = new android.widget.TextView (context);
+         textView.setText (options.text);
+         return textView;
+     }
 }

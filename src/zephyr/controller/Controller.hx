@@ -56,6 +56,6 @@ class Controller {
      *  @param page - 
      */
     public function setPage (page : Page) : Void {
-        context.setView (page.render ());
+        context.setView (page.layout ());
     }
 }

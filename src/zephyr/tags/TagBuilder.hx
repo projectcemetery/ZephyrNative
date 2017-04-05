@@ -1,16 +1,19 @@
 package zephyr.tags;
 
+import zephyr.tags.textview.*;
+import zephyr.tags.TagOptions;
+
 /**
  *  Helper for markup
  */
 class TagBuilder {
 
     /**
-     *  Add vertical box
+     *  Add vertical box tag
      *  @param childs - 
      *  @return VBox
      */
-    public static function vbox (?childs : Array<Tag>) : VBox {
+    public static function vbox (?options : TagOptions, ?childs : Array<Tag>) : VBox {
         return new VBox (childs);
     }
 
@@ -30,8 +33,13 @@ class TagBuilder {
     public static function imagebutton () : Imagebutton {
         return new Imagebutton ();
     }
-
-    public static function textview (options : TextViewOptions) : Textview {
-        return new Textview (options);
-    }*/
+*/
+    /**
+     *  Create TextView tag
+     *  @param options - 
+     *  @return TextView
+     */
+    public static function textview (options : TextViewOptions) : TextView {
+        return new TextView (options);
+    }
 }

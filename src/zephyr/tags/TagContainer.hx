@@ -21,65 +21,50 @@
 
 package zephyr.tags;
 
-import android.view.View;
-import android.content.Context;
-
 /**
- *  Markup object
+ *  Container of tags
  */
-class Tag extends TagContainer {
-
-     /**
-      *  Id of tag
-      */
-     public var id (default, null) : String;
-
-     /**
-      *  Css styles
-      */
-     public var styles (default, null) : Array<String>;
-
-     /**
-      *  Render childrens
-      */
-     function renderChilds (context : Context) : Array<View> {
-        if (childs == null) return [];
-        return [for (i in childs) i.render (context)];
-     }
-
-     /**
-      *  Constructor
-      *  @param tags - 
-      */
-     public function new (?tags : Array<Tag>) {
-         super (tags);
-         styles = new Array<String> ();
-     }
+class TagContainer {
 
     /**
-     *  Render tag to android view
-     *  Virtual
-     *  @return View
+     *  All tags
      */
-    public function render (context : Context) : View {
-        throw "Not implemented";
+    var childs : Array<Tag>;
+
+    /**
+     *  Constructor
+     *  @param tags - 
+     */
+    public function new (?tags : Array<Tag>) {
+        childs = tags;
+    }
+
+    /**
+     *  Find tag by id recursive
+     *  @param id - 
+     *  @return Tag
+     */
+    public function findById (id : String) : Tag {
+        // First search in childs
+        for (t in childs) {            
+            if (t.id == id) return t;
+        }
+
+        // Second search in child childs
+        for (t in childs) {
+            var it = t.findById (id);
+            if (it != null) return it;
+        }
+
+        return null;
     }
 
     /**
      *  Find all tags by css style names
      *  @param styleNames - 
      */
-    override public function findByCss (styleNames : Array<String>) : Array<Tag> {
+    public function findByCss (styleNames : Array<String>) : Array<Tag> {        
         var res = new Array<Tag> ();
-
-        var found = false;
-        for (s in styleNames) {
-            if (styles.indexOf (s) < 0) break;
-            found = true;
-        }
-        
-        if (found) res.push (this);        
-
         for (t in childs) {
             var styles = t.findByCss (styleNames);
             if (styles != null) res = res.concat (styles);
@@ -87,11 +72,4 @@ class Tag extends TagContainer {
 
         return if (res.length > 0) res else null;
     }
-
-    /**
-     *  Apply css style to tag
-     */
-    /*public function applyStyle (style : StyleSheet) {
-
-    }*/
 }

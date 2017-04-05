@@ -19,38 +19,18 @@
  * THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
-package zephyr.page;
+package zephyr.tags.textview;
 
-import zephyr.tags.Tag;
-import zephyr.tags.TagContainer;
+import zephyr.tags.TagOptions;
 
 /**
- *  Page view, container for others
+ *  Options for TextView constructor
  */
-class Page extends TagContainer {
+typedef TextViewOptions = {
+    > TagOptions,
 
     /**
-     *  Constructor
+     *  TextView text
      */
-    public function new () {
-        super (null);
-    }
-
-    /**
-     *  Get page layout
-     *  @return Tag
-     */
-    public function render () : Tag {
-        var tag = layout ();
-        childs = [tag];
-        return tag;
-    }
-
-    /**
-     *  
-     *  @return Tag
-     */
-    public function layout () : Tag {
-        throw "Not implemented";
-    }    
+    var text : String;
 }
