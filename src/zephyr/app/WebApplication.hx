@@ -19,54 +19,50 @@
  * THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
-package zephyr.tags.textview;
+package zephyr.app;
 
-#if android
-import android.widget.LinearLayout;
-import android.widget.LinearLayout.LinearLayout_LayoutParams;
-import android.content.Context;
-#end
-
-import zephyr.app.ApplicationContext;
+#if web
+import js.Browser;
 import zephyr.app.NativeView;
 
 /**
- *  Tag for TextView 
+ *  Application for webview: browser, cordova, etc
  */
-class TextView extends Tag {
+class WebApplication implements INativeApplication {
 
     /**
-     *  Options for textview rendering
+     *  Entry point
      */
-    var options : TextViewOptions;
+    public static function main () {
+        var app = new WebApplication ();
 
-    /**
-     *  Render for android
-     */
-    function renderAndroid (context : ApplicationContext) : NativeView {
-        var textView = new android.widget.TextView (context.getAndroidActivity ());
-        textView.setText (options.text);
-        return textView;
+        var cls = Type.resolveClass (app.getEntryPoint ());
+        if (cls != null) {
+            var inst : IApplication = cast Type.createEmptyInstance (cls);
+            inst.onReady (new ApplicationContext (app));
+        }
     }
 
     /**
-      *  Constructor 
-      */
-     public function new (options : TextViewOptions) {
-         super (null);
-         this.options = options;
-     }
+     *  Constructor
+     */
+    public function new () {}
 
-     /**
-      *  Render TextView
-      *  @param context - 
-      *  @return View
-      */
-     override public function render (context : ApplicationContext) : NativeView {
-         #if android
-         return renderAndroid (context);
-         #end
-         
-         return null;
-     }
+    /**
+     *  Return entry point class
+     *  @return Class<T>
+     */
+    public function getEntryPoint () : String {
+        throw "Not implemented";
+    }
+
+    /**
+     *  Apply view
+     *  @param view - 
+     */
+    public function setView (view : NativeView) : Void {
+        Browser.document.clear ();
+        Browser.document.appendChild (view);
+    }    
 }
+#end

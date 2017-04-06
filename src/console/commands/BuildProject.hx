@@ -73,6 +73,13 @@ class BuildProject {
     }
 
     /**
+     *  Build for web
+     */
+    function buildWeb () {
+        
+    }
+
+    /**
      *  Constructor
      */
     public function new (params : Array<String>, other : Rest<String>) {
@@ -87,6 +94,7 @@ class BuildProject {
     public function run (isInstall : Bool = false) {
         switch (target) {
             case Target.Android : buildAndroid (isInstall);
+            case Target.Web : buildWeb ();
             default: {
                 throw "Unsupported platform";
             }

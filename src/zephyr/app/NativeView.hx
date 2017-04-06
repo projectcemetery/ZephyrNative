@@ -21,38 +21,13 @@
 
 package zephyr.app;
 
-import android.app.Activity;
-import android.os.Bundle;
-import android.view.Window;
+#if android
+/**
+ *  Native view for each platform
+ */
+typedef NativeView = android.view.View;
+#end
 
-@:keep
-class ZephyrActivity extends android.app.Activity {
-
-    /**
-     *  Entry point to user code
-     */
-    private static inline var MAIN_NAME = "com.example.app.Main";
-
-    /**
-     *  Return entry point class
-     *  @return Class<T>
-     */
-    function getEntryPoint () : String {
-        throw "Not implemented";
-    }
-
-    /**
-     *  On activity create
-     *  @param b - 
-     */
-    @:overload
-    override function onCreate (b : Bundle) : Void {
-        super.onCreate (b);        
-        this.requestWindowFeature (Window.FEATURE_NO_TITLE);
-        var cls = Type.resolveClass (getEntryPoint ());
-        if (cls != null) {
-            var inst : IApplication = cast Type.createEmptyInstance (cls);
-            inst.onReady (new ApplicationContext (this));
-        }
-    }            
-}
+#if web
+typedef NativeView = js.html.DOMElement;
+#end

@@ -19,54 +19,51 @@
  * THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
-package zephyr.tags.textview;
+package zephyr.app;
 
 #if android
-import android.widget.LinearLayout;
-import android.widget.LinearLayout.LinearLayout_LayoutParams;
-import android.content.Context;
-#end
-
-import zephyr.app.ApplicationContext;
+import android.app.Activity;
+import android.os.Bundle;
+import android.view.Window;
 import zephyr.app.NativeView;
 
-/**
- *  Tag for TextView 
- */
-class TextView extends Tag {
+@:keep
+class AndroidApplication extends android.app.Activity implements INativeApplication {
 
     /**
-     *  Options for textview rendering
+     *  Entry point to user code
      */
-    var options : TextViewOptions;
+    private static inline var MAIN_NAME = "com.example.app.Main";
 
     /**
-     *  Render for android
+     *  Return entry point class
+     *  @return Class<T>
      */
-    function renderAndroid (context : ApplicationContext) : NativeView {
-        var textView = new android.widget.TextView (context.getAndroidActivity ());
-        textView.setText (options.text);
-        return textView;
+    public function getEntryPoint () : String {
+        throw "Not implemented";
     }
 
     /**
-      *  Constructor 
-      */
-     public function new (options : TextViewOptions) {
-         super (null);
-         this.options = options;
-     }
+     *  On activity create
+     *  @param b - 
+     */
+    @:overload
+    override function onCreate (b : Bundle) : Void {
+        super.onCreate (b);        
+        this.requestWindowFeature (Window.FEATURE_NO_TITLE);
+        var cls = Type.resolveClass (getEntryPoint ());
+        if (cls != null) {
+            var inst : IApplication = cast Type.createEmptyInstance (cls);
+            inst.onReady (new ApplicationContext (this));
+        }
+    }
 
-     /**
-      *  Render TextView
-      *  @param context - 
-      *  @return View
-      */
-     override public function render (context : ApplicationContext) : NativeView {
-         #if android
-         return renderAndroid (context);
-         #end
-         
-         return null;
-     }
+    /**
+     *  Apply view
+     *  @param view - 
+     */
+    public function setView (view : NativeView) : Void {
+        setContentView (view);
+    }
 }
+#end

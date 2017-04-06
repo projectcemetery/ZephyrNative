@@ -21,8 +21,8 @@
 
 package zephyr.tags;
 
-import android.view.View;
-import android.content.Context;
+import zephyr.app.ApplicationContext;
+import zephyr.app.NativeView;
 import zephyr.style.Style;
 
 /**
@@ -56,7 +56,7 @@ class Tag extends TagContainer {
      /**
       *  Render childrens
       */
-     function renderChilds (context : Context) : Array<View> {
+     function renderChilds (context : ApplicationContext) : Array<NativeView> {
         if (childs == null) return [];
         return [for (i in childs) i.render (context)];
      }
@@ -81,7 +81,7 @@ class Tag extends TagContainer {
      *  Virtual
      *  @return View
      */
-    public function render (context : Context) : View {
+    public function render (context : ApplicationContext) : NativeView {
         throw "Not implemented";
     }
 

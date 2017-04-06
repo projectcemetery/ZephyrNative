@@ -1,6 +1,8 @@
 {
     "haxe.displayConfigurations": [
-        ["build.hxml"],
-        ["console.hxml"],
+        ["android.hxml"],
+        ["web.hxml"],
+        ["ios.hxml"],
+        ["console.hxml"]
     ]
 }

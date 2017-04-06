@@ -1,5 +1,0 @@
--cp src
--D analyzer-optimize
--java-lib ./libs/android.jar
-zephyr.app.ZephyrActivity
--java ./out

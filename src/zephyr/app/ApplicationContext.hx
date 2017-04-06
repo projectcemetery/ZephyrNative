@@ -21,15 +21,19 @@
 
 package zephyr.app;
 
+#if android
+import android.app.Activity;
+#end
+
 import zephyr.controller.Controller;
 import zephyr.tags.Tag;
 
 class ApplicationContext {
 
     /**
-     *  Owner activity
+     *  Owner application
      */
-    var owner : ZephyrActivity;
+    var owner : INativeApplication;
 
     /**
      *  Controllers
@@ -44,7 +48,7 @@ class ApplicationContext {
     /**
      *  Constructor
      */
-    public function new (owner : ZephyrActivity) {
+    public function new (owner : INativeApplication) {
         this.owner = owner;
         controllers = new Map<String, Controller> ();
     }
@@ -77,7 +81,17 @@ class ApplicationContext {
      *  @param view - 
      */
     public function setView (view : Tag) : Void {
-        var view = view.render (owner);
-        owner.setContentView (view);
+        var view = view.render (this);
+        owner.setView (view);
     }
+
+    #if android
+    /**
+     *  Return android activity
+     *  @return Activity
+     */
+    public function getAndroidActivity () : Activity {
+        return cast (owner, Activity);
+    }
+    #end
 }

@@ -19,54 +19,22 @@
  * THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
-package zephyr.tags.textview;
-
-#if android
-import android.widget.LinearLayout;
-import android.widget.LinearLayout.LinearLayout_LayoutParams;
-import android.content.Context;
-#end
-
-import zephyr.app.ApplicationContext;
-import zephyr.app.NativeView;
+package zephyr.app;
 
 /**
- *  Tag for TextView 
+ *  Interface to native application. Like: Activity
  */
-class TextView extends Tag {
+interface INativeApplication {
 
     /**
-     *  Options for textview rendering
+     *  Get class type - entry point of application
+     *  @return String
      */
-    var options : TextViewOptions;
+    public function getEntryPoint () : String;
 
     /**
-     *  Render for android
+     *  Apply view
+     *  @param view - 
      */
-    function renderAndroid (context : ApplicationContext) : NativeView {
-        var textView = new android.widget.TextView (context.getAndroidActivity ());
-        textView.setText (options.text);
-        return textView;
-    }
-
-    /**
-      *  Constructor 
-      */
-     public function new (options : TextViewOptions) {
-         super (null);
-         this.options = options;
-     }
-
-     /**
-      *  Render TextView
-      *  @param context - 
-      *  @return View
-      */
-     override public function render (context : ApplicationContext) : NativeView {
-         #if android
-         return renderAndroid (context);
-         #end
-         
-         return null;
-     }
+    public function setView (view : NativeView) : Void;
 }
