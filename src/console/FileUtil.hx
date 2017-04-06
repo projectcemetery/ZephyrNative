@@ -49,7 +49,7 @@ class FileUtil {
      *  @param name - 
      */
     public static function getTemplate (name : String) : String {
-        var path = Path.join (["templates", name]);
+        var path = Path.join (["bundle", "templates", name]);
         return File.getContent (path);
     }
 }

@@ -25,18 +25,43 @@ class BuildProject {
     var target : Target;
 
     /**
-     *  Build/install for android
-     *  @param isInstall - 
+     *  Project
      */
-    function buildAndroid (isInstall : Bool) {
-        var activityText = FileUtil.getTemplate ("ActivityText.java");
-        Sys.setCwd (workPath);
-        var project = ProjectSettings.load (ProjectSettings.projectNameDef);
-        Logger.info ("Compiling haxe code");            
-        ProcessHelper.launch ("haxe", [ProjectSettings.androidHxmlName], function (error : String) {
-            if (error != null) throw (error);
-        });
+    var project : ProjectSettings;
 
+    /**
+     *  Path to lib
+     */
+    var libDir : String;
+
+    /**
+     *  Write android.hxml
+     *  @param path - 
+     */
+    function writeAndroidHxml (libPath : String) {
+        Logger.infoStart ("Writing android.hxml");
+        var text = project.generateAndroidHxml (libPath);
+        File.saveContent ("android.hxml", text);
+        Logger.endInfoSuccess ();
+    }
+
+    /**
+     *  Compile haxe code
+     */
+    function compileHaxeCode () {
+        Logger.infoStart ("Compiling haxe code");
+        ProcessHelper.launch ("haxe", [ProjectSettings.androidHxmlName], function (error : String) {
+            if (error != null) {
+                Logger.endInfoError ();
+                throw (error);
+            }
+        });
+    }
+
+    /**
+     *  Save activity text
+     */
+    function saveActivityText (activityText : String) {
         var activityName = project.getActivityName ();
         var text = activityText.replace (ProjectSettings.activityNameParam, activityName);
         text = text.replace (ProjectSettings.projectNameParam, project.settings.name);
@@ -46,8 +71,13 @@ class BuildProject {
         File.saveContent (path, text);
 
         var androidProjPath = Path.join ([workPath, "build", "android"]);
-        Sys.setCwd (androidProjPath);
+        Sys.setCwd (androidProjPath);        
+    }
 
+    /**
+     *  Gradle build/install
+     */
+    function buildInstall (isInstall) {
         var cmd = {
             if (Sys.systemName () == "Windows") {
                 "gradlew.bat";
@@ -58,18 +88,43 @@ class BuildProject {
 
         // Only build            
         if (!isInstall) {
-            Logger.info ("Assembling APK");            
+            Logger.infoStart ("Assembling APK");            
             ProcessHelper.launch (cmd, ["assembleDebug"], function (error : String) {
-                if (error != null) throw (error);
+                if (error != null) {
+                    throw (error);
+                } else {
+                     Logger.endInfoError ();
+                }
             });
-            Logger.info ("Build complete");
+            Logger.endInfoSuccess ();
+        // Build and install
         } else {
-            Logger.info ("Assembling and installing APK");                
+            Logger.infoStart ("Assembling and installing APK");                
             ProcessHelper.launch (cmd, ["installDebug"], function (error : String) {
-                if (error != null) throw (error);
+                if (error != null) {
+                    throw (error);
+                } else {
+                     Logger.endInfoError ();
+                }
             });
-            Logger.info ("Installation complete");
-        }        
+            Logger.endInfoSuccess ();
+        }
+    }
+
+    /**
+     *  Build/install for android
+     *  @param isInstall - 
+     */
+    function buildAndroid (isInstall : Bool) {
+        trace ("SHIT");
+        // Get templates
+        var activityText = FileUtil.getTemplate ("ActivityText.java");        
+        Sys.setCwd (workPath);
+        
+        writeAndroidHxml (libDir);        
+        compileHaxeCode ();
+        saveActivityText (activityText);        
+        buildInstall (isInstall);
     }
 
     /**
@@ -92,6 +147,9 @@ class BuildProject {
      *  Run build
      */
     public function run (isInstall : Bool = false) {
+        libDir = Sys.getCwd ();        
+        project = ProjectSettings.load (ProjectSettings.projectNameDef); 
+              
         switch (target) {
             case Target.Android : buildAndroid (isInstall);
             case Target.Web : buildWeb ();

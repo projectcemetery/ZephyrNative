@@ -86,17 +86,7 @@ class ${projectName} implements IApplication {
         content = content.replace ("${projectName}", project.settings.name);
         content = content.replace ("${activityName}", project.getActivityName ());
         File.saveContent (path, content);
-    }
-
-    /**
-     *  Fix android.hxml
-     *  @param path - 
-     */
-    function writeAndroidHxml (workPath : String, libPath : String) {
-        var androidHxmlPath = Path.join ([ workPath, "android.hxml" ]);
-        var text = project.generateAndroidHxml (libPath);
-        File.saveContent (androidHxmlPath, text);
-    }
+    }    
 
     /**
      *  Write Main.hx
@@ -138,43 +128,36 @@ class ${projectName} implements IApplication {
     /**
      *  Run command
      */
-    public function run () {
-        try {            
-            var launchDir = params[params.length - 1];
-            var workDir = Path.join ([ launchDir, project.settings.name ]);
-            var libDir = FileSystem.fullPath (".");
-            if (FileSystem.exists (workDir)) throw 'Folder ${workDir} already exists';
-            Logger.info ('Creating directory ${workDir}');
-            FileSystem.createDirectory (workDir);            
+    public function run () {        
+        var launchDir = params[params.length - 1];
+        var workDir = Path.join ([ launchDir, project.settings.name ]);
+        var libDir = FileSystem.fullPath (".");
+        if (FileSystem.exists (workDir)) throw 'Folder ${workDir} already exists';
+        Logger.infoStart ('Creating directory ${workDir}');
+        FileSystem.createDirectory (workDir);            
+        Logger.endInfoSuccess ();
 
-            var srcDir = Path.join ([ libDir, "bundle" ]);
-            var destDir = workDir;
-            Logger.info ('Coping bundle files from ${srcDir} to ${destDir}');
-            FileUtil.copyFromDir (srcDir, destDir);
+        var srcDir = Path.join ([ libDir, "bundle", "project" ]);
+        var destDir = workDir;
+        Logger.infoStart ('Coping project files from ${srcDir} to ${destDir}');
+        FileUtil.copyFromDir (srcDir, destDir);
+        Logger.endInfoSuccess ();
 
-            // Write project file
-            Logger.info ("Writing project settings");
-            writeProjectFile (workDir);
+        // Write project file
+        Logger.infoStart ("Writing project settings");
+        writeProjectFile (workDir);
+        Logger.endInfoSuccess ();
 
-            // Fix manifest
-            Logger.info ("Fixing android manifest");
-            var manifestPath = Path.join ([ workDir, "build", "android", "src", "main", "AndroidManifest.xml" ]);
-            fixManifest (manifestPath);            
+        // Write Application
+        Logger.infoStart ('Write ${project.settings.name}.hx');
+        writeMain (workDir);
+        Logger.endInfoSuccess ();
 
-            // Add java lib to android.hxml
-            Logger.info ("Writing android.hxml");
-            writeAndroidHxml (workDir, libDir);
+        // Fix manifest
+        /*Logger.info ("Fixing android manifest");
+        var manifestPath = Path.join ([ workDir, "build", "android", "src", "main", "AndroidManifest.xml" ]);
+        fixManifest (manifestPath);*/                        
 
-            // Write Main.hx
-            Logger.info ("Write Main.hx");
-            writeMain (workDir);
-
-            //             
-
-            Logger.info ("Project created");
-        } catch (e : Dynamic) {
-            Logger.info (e);
-            Logger.info ("Can't create new project");
-        }        
+        Logger.success ("Project created");
     }
 }

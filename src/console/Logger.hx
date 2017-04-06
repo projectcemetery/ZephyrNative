@@ -37,10 +37,58 @@ class Logger {
     }
 
     /**
+     *  Start Log info
+     *  @param e - 
+     */
+    public static inline function infoStart (e : String) {
+        Lib.print (e);
+    }
+
+    /**
+     *  Start Log info
+     *  @param e - 
+     */
+    public static inline function endInfoSuccess () {
+        if (Sys.systemName () != "Windows") {
+            Lib.println ('\033[0;32m - DONE\033[0m');
+        } else {
+            Lib.println (" - DONE");
+        }
+    }
+
+    /**
+     *  Start Log info
+     *  @param e - 
+     */
+    public static inline function endInfoError () {
+        if (Sys.systemName () != "Windows") {
+            Lib.println ('\033[0;31m - ERROR\033[0m');
+        } else {
+            Lib.println (" - ERROR");
+        }
+    }
+
+    /**
+     *  Log info line
+     *  @param e - 
+     */
+    public static inline function success (e : String) {
+        if (Sys.systemName () != "Windows") {
+            Lib.println ('\033[0;32m${e}\033[0m');
+        } else {
+            Lib.println (e);
+        }
+    }
+
+    /**
      *  Log error line
      *  @param e - 
      */
     public static inline function error (e : String) {
-        Lib.println (e);
+        if (Sys.systemName () != "Windows") {
+            Lib.println ('\033[0;31m${e}\033[0m');
+        } else {
+            Lib.println (e);
+        }
     }
 }

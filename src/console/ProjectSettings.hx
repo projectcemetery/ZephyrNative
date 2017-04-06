@@ -120,11 +120,15 @@ ${javaLibs}";
      *  @return ProjectSettings
      */
     public static function load (path : String) : ProjectSettings {
-        var text = File.getContent (path);
-        var sett : ProjectSettingsFields =  Json.parse (text);
-        var proj = new ProjectSettings ("", "");
-        proj.settings = sett;
-        return proj;        
+        try {
+            var text = File.getContent (path);
+            var sett : ProjectSettingsFields =  Json.parse (text);
+            var proj = new ProjectSettings ("", "");
+            proj.settings = sett;
+            return proj;        
+        } catch (e : Dynamic) {
+            throw "Can't find project file";
+        }
     }
 
     /**
