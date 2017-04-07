@@ -67,6 +67,11 @@ class ProjectSettings {
     public inline static var androidHxmlName = "android.hxml";
 
     /**
+     *  web.hxml
+     */
+    public inline static var webHxmlName = "web.hxml";
+
+    /**
      *  Path to libs
      */
     public inline static var libsDir = "libs";
@@ -143,17 +148,28 @@ class ProjectSettings {
      *  @param libDir - 
      *  @return String
      */
-    public function generateAndroidHxml (libDir : String) : String {
+    public function generateAndroidHxml () : String {
         var stringBuf = new StringBuf ();
-        for (e in settings.javaLibs) {
-            var path = Path.join ([libDir, libsDir, androidLib]);
+        for (e in settings.javaLibs) {            
+            var path = Path.join ([FileUtil.libDir, libsDir, androidLib]);
             stringBuf.add ('-java-lib ${path}');
         }
 
-        var template = FileUtil.getTemplate ("android.hxml");
+        var template = FileUtil.getTemplate (androidHxmlName);
         var text = template.replace (packageNameParam, settings.packageName);
         text = text.replace (projectNameParam, settings.name);
         text = text.replace (javaLibsParam, stringBuf.toString ());
+        return text;
+    }
+
+    /**
+     *  Generate web.hxml
+     *  @return String
+     */
+    public function generateWebHxml () : String {
+        var template = FileUtil.getTemplate (webHxmlName);
+        var text = template.replace (packageNameParam, settings.packageName);
+        text = text.replace (projectNameParam, settings.name);
         return text;
     }
 

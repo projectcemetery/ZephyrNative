@@ -21,14 +21,33 @@
 
 package zephyr.app;
 
-#if android
-import android.app.Activity;
-import android.os.Bundle;
-import android.view.Window;
+#if web
+import js.Browser;
 import zephyr.app.NativeView;
 
+/**
+ *  Application for webview: browser, cordova, etc
+ */
 @:keep
-class AndroidApplication extends android.app.Activity implements INativeApplication {
+class ${webAppName} implements INativeApplication {
+
+    /**
+     *  Entry point
+     */
+    public static function main () {
+        var app = new ${projectName} ();
+
+        var cls = Type.resolveClass (app.getEntryPoint ());
+        if (cls != null) {
+            var inst : IApplication = cast Type.createEmptyInstance (cls);
+            inst.onReady (new ApplicationContext (app));
+        }
+    }
+
+    /**
+     *  Constructor
+     */
+    public function new () {}
 
     /**
      *  Return entry point class
@@ -39,26 +58,12 @@ class AndroidApplication extends android.app.Activity implements INativeApplicat
     }
 
     /**
-     *  On activity create
-     *  @param b - 
-     */
-    @:overload
-    override function onCreate (b : Bundle) : Void {
-        super.onCreate (b);        
-        this.requestWindowFeature (Window.FEATURE_NO_TITLE);
-        var cls = Type.resolveClass (getEntryPoint ());
-        if (cls != null) {
-            var inst : IApplication = cast Type.createEmptyInstance (cls);
-            inst.onReady (new ApplicationContext (this));
-        }
-    }
-
-    /**
      *  Apply view
      *  @param view - 
      */
     public function setView (view : NativeView) : Void {
-        setContentView (view);
-    }
+        Browser.document.clear ();
+        Browser.document.appendChild (view);
+    }    
 }
 #end

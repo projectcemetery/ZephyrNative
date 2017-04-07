@@ -54,11 +54,7 @@ class FileUtil {
         } else {
             var oldPath = Sys.getCwd ();
             Sys.setCwd (src);
-            var proc = new Process ("cp", ["-a", ".", dest]);
-            var code = proc.exitCode (true);
-            if (code != 0) {
-                Logger.info (proc.stderr.readLine ());
-            }
+            ProcessHelper.launch ("cp", ["-a", ".", dest]);
             Sys.setCwd (oldPath);
         }
     }

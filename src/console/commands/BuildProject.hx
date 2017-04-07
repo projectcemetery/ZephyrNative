@@ -4,7 +4,6 @@ import tink.cli.*;
 import sys.FileSystem;
 import haxe.io.Path;
 import sys.io.File;
-import sys.io.Process;
 import console.ProjectSettings;
 
 using StringTools;
@@ -25,13 +24,18 @@ class BuildProject {
     var project : ProjectSettings;
 
     /**
-     *  Write android.hxml
+     *  Write hxml file
      *  @param path - 
      */
-    function writeAndroidHxml () {
-        Logger.infoStart ("Writing android.hxml");
-        var text = project.generateAndroidHxml (FileUtil.libDir);
-        File.saveContent ("android.hxml", text);
+    function writeHxml () {
+        Logger.infoStart ('Writing ${target}.hxml');
+        var text = switch(target) {
+            case Target.Android: project.generateAndroidHxml ();
+            case Target.Web: project.generateWebHxml ();
+            default: throw "Unknown target";
+        }
+        
+        File.saveContent ('${target}.hxml', text);
         Logger.endInfoSuccess ();
     }
 
@@ -39,10 +43,13 @@ class BuildProject {
      *  Copy build data from bundle if not exists
      */
     function writeBuildData () {
-        var workBuild = Path.join ([FileUtil.workDir, "build", "android"]); 
+        var workBuild = Path.join ([FileUtil.workDir, "build", target]); 
         if (!FileSystem.exists (workBuild)) {
-            var libBuild = Path.join ([FileUtil.libDir, "bundle", "build", "android"]);            
+            FileSystem.createDirectory (workBuild);
+            var libBuild = Path.join ([FileUtil.libDir, "bundle", "build", target]);            
+            Logger.infoStart ('Copy bundle from ${libBuild} to ${workBuild}');
             FileUtil.copyFromDir (libBuild, workBuild);
+            Logger.endInfoSuccess ();
         }        
     }
 
@@ -51,14 +58,21 @@ class BuildProject {
      */
     function compileHaxeCode () {
         Logger.infoStart ("Compiling haxe code");
-        ProcessHelper.launch ("haxe", [ProjectSettings.androidHxmlName]);
+
+        var name = switch (target) {
+            case Target.Android: ProjectSettings.androidHxmlName;
+            case Target.Web: ProjectSettings.webHxmlName;
+            default: throw "Unsupported platform";
+        }
+
+        ProcessHelper.launch ("haxe", [name]);
         Logger.endInfoSuccess ();
     }
 
     /**
      *  Save activity text
      */
-    function saveActivityText () {
+    function writeActivityText () {
         var activityText = FileUtil.getTemplate ("ActivityText.java");
 
         var activityName = project.getActivityName ();
@@ -115,13 +129,11 @@ class BuildProject {
      *  Build/install for android
      *  @param isInstall - 
      */
-    function buildAndroid (isInstall : Bool) {
-        // Get templates                
-        Sys.setCwd (FileUtil.workDir);        
-        writeAndroidHxml ();
+    function buildAndroid (isInstall : Bool) {        
+        writeHxml ();
         writeBuildData ();
         compileHaxeCode ();
-        saveActivityText ();
+        writeActivityText ();
         writeManifest ();
         buildInstall (isInstall);                      
     }
@@ -129,8 +141,10 @@ class BuildProject {
     /**
      *  Build for web
      */
-    function buildWeb () {
-        
+    function buildWeb () {        
+        writeHxml ();
+        writeBuildData ();
+        compileHaxeCode ();
     }
 
     /**
@@ -144,16 +158,16 @@ class BuildProject {
     /**
      *  Run build
      */
-    public function run (isInstall : Bool = false) {        
+    public function run (isInstall : Bool = false) {
         var path = Path.join ([FileUtil.workDir, ProjectSettings.projectNameDef]);
         project = ProjectSettings.load (path); 
-              
+        
+        // Set dir to working project dir
+        Sys.setCwd (FileUtil.workDir);
         switch (target) {
             case Target.Android : buildAndroid (isInstall);
             case Target.Web : buildWeb ();
-            default: {
-                throw "Unsupported platform";
-            }
+            default: throw "Unsupported platform";
         }
     }
 }

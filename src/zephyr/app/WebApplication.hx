@@ -28,12 +28,15 @@ import zephyr.app.NativeView;
 /**
  *  Application for webview: browser, cordova, etc
  */
+@:keep
 class WebApplication implements INativeApplication {
 
     /**
      *  Entry point
      */
     public static function main () {
+        // TODO: try to get app entry point from macros data
+
         var app = new WebApplication ();
 
         var cls = Type.resolveClass (app.getEntryPoint ());
@@ -50,7 +53,7 @@ class WebApplication implements INativeApplication {
 
     /**
      *  Return entry point class
-     *  @return Class<T>
+     *  @return class type name
      */
     public function getEntryPoint () : String {
         throw "Not implemented";
