@@ -1,9 +1,10 @@
--cp src
+-cp ../src
 -D analyzer-optimize
 -D no-compilation
 -D web
+-D entryPoint=${packageName}.${projectName}
 -dce full
 -lib ZephyrNative
--js ./build/web/main.js
+-js ./web/main.js
 -main zephyr.app.WebApplication
 ${packageName}.${projectName}

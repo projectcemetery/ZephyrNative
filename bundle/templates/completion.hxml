@@ -1,0 +1,3 @@
+-cp src
+-lib ZephyrNative
+${packageName}.${projectName}

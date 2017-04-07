@@ -27,12 +27,6 @@ package zephyr.app;
 interface INativeApplication {
 
     /**
-     *  Get class type - entry point of application
-     *  @return String
-     */
-    public function getEntryPoint () : String;
-
-    /**
      *  Apply view
      *  @param view - 
      */

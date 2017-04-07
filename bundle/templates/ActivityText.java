@@ -16,9 +16,4 @@ public class ${activityName} extends zephyr.app.AndroidApplication
 	{		
 		super();
 	}
-		
-	@Override public java.lang.String getEntryPoint()
-	{		
-		return "${packageName}.${projectName}";
-	}		
 }

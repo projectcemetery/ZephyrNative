@@ -35,7 +35,8 @@ class BuildProject {
             default: throw "Unknown target";
         }
         
-        File.saveContent ('${target}.hxml', text);
+        var outPath = Path.join (["build", '${target}.hxml']);
+        File.saveContent (outPath, text);
         Logger.endInfoSuccess ();
     }
 
@@ -65,8 +66,12 @@ class BuildProject {
             default: throw "Unsupported platform";
         }
 
+        var path = Path.join ([FileUtil.workDir, "build"]);
+        var old = Sys.getCwd ();
+        Sys.setCwd (path);
         ProcessHelper.launch ("haxe", [name]);
         Logger.endInfoSuccess ();
+        Sys.setCwd (old);
     }
 
     /**

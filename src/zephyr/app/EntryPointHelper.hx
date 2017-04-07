@@ -21,42 +21,16 @@
 
 package zephyr.app;
 
-#if web
-import js.Browser;
-import zephyr.app.NativeView;
-import zephyr.app.EntryPointHelper;
-
 /**
- *  Application for webview: browser, cordova, etc
+ *  Helper for entry point
  */
-@:keep
-class WebApplication implements INativeApplication {
+class EntryPointHelper {
 
     /**
-     *  Entry point
+     *  Get      
+     *  @return haxe.macro.Expr
      */
-    public static function main () {        
-        var entryPoint = EntryPointHelper.getEntryPoint();
-        var cls = Type.resolveClass (entryPoint);        
-        if (cls != null) {
-            var app = new WebApplication ();
-            var inst : IApplication = cast Type.createEmptyInstance (cls);
-            inst.onReady (new ApplicationContext (app));
-        }
+    public static macro function getEntryPoint() : haxe.macro.Expr {
+        return macro $v{haxe.macro.Context.definedValue("entryPoint")};
     }
-
-    /**
-     *  Constructor
-     */
-    public function new () {}
-
-    /**
-     *  Apply view
-     *  @param view - 
-     */
-    public function setView (view : NativeView) : Void {
-        Browser.document.clear ();
-        Browser.document.appendChild (view);
-    }    
 }
-#end

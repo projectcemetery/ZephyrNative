@@ -31,22 +31,15 @@ import zephyr.app.NativeView;
 class AndroidApplication extends android.app.Activity implements INativeApplication {
 
     /**
-     *  Return entry point class
-     *  @return class type name
-     */
-    public function getEntryPoint () : String {
-        throw "Not implemented";
-    }
-
-    /**
      *  On activity create
-     *  @param b - 
+     *  @param bundle - 
      */
     @:overload
-    override function onCreate (b : Bundle) : Void {
-        super.onCreate (b);        
+    override function onCreate (bundle : Bundle) : Void {
+        super.onCreate (bundle);
         this.requestWindowFeature (Window.FEATURE_NO_TITLE);
-        var cls = Type.resolveClass (getEntryPoint ());
+        var entryPoint = EntryPointHelper.getEntryPoint();
+        var cls = Type.resolveClass (entryPoint);
         if (cls != null) {
             var inst : IApplication = cast Type.createEmptyInstance (cls);
             inst.onReady (new ApplicationContext (this));

@@ -72,6 +72,11 @@ class ProjectSettings {
     public inline static var webHxmlName = "web.hxml";
 
     /**
+     *  completion.hxml
+     */
+    public inline static var completionHxmlName = "completion.hxml";
+
+    /**
      *  Path to libs
      */
     public inline static var libsDir = "libs";
@@ -168,6 +173,17 @@ class ProjectSettings {
      */
     public function generateWebHxml () : String {
         var template = FileUtil.getTemplate (webHxmlName);
+        var text = template.replace (packageNameParam, settings.packageName);
+        text = text.replace (projectNameParam, settings.name);
+        return text;
+    }
+
+    /**
+     *  Generate completion.hxml
+     *  @return String
+     */
+    public function generateCompletionHxml () : String {
+        var template = FileUtil.getTemplate (completionHxmlName);
         var text = template.replace (packageNameParam, settings.packageName);
         text = text.replace (projectNameParam, settings.name);
         return text;

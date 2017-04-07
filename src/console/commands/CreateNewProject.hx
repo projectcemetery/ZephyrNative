@@ -52,8 +52,10 @@ class CreateNewProject {
      *  Write project     
      */
     function writeProjectFile () {
+        Logger.infoStart ("Writing project settings");
         var path = Path.join ([workDir, ProjectSettings.projectNameDef]);
         project.save (path);
+        Logger.endInfoSuccess ();
     }       
 
     /**
@@ -61,6 +63,9 @@ class CreateNewProject {
      *  @param workPath - 
      */
     function writeMain () {
+        // Write Application
+        Logger.infoStart ('Write ${project.settings.name}.hx');
+
         var packPaths = project.settings.packageName.split (".");
 
         var path = [workDir, "src"].concat (packPaths);        
@@ -72,6 +77,19 @@ class CreateNewProject {
         var text = mainText.replace (ProjectSettings.packageNameParam, project.settings.packageName);
         text = text.replace (ProjectSettings.projectNameParam, project.settings.name);
         File.saveContent (filePath, text);
+        Logger.endInfoSuccess ();
+    }
+
+    /**
+     *  Write hxml file
+     *  @param path - 
+     */
+    function writeCompletionHxml () {
+        Logger.infoStart ('Writing completion.hxml');
+        var text = project.generateCompletionHxml (); 
+        var path = Path.join ([workDir, ProjectSettings.completionHxmlName]);
+        File.saveContent (path, text);
+        Logger.endInfoSuccess ();
     }
 
     /**
@@ -111,16 +129,10 @@ class CreateNewProject {
         Logger.infoStart ('Coping project files from ${srcDir} to ${destDir}');
         FileUtil.copyFromDir (srcDir, destDir);
         Logger.endInfoSuccess ();
-
-        // Write project file
-        Logger.infoStart ("Writing project settings");
+        
         writeProjectFile ();
-        Logger.endInfoSuccess ();
-
-        // Write Application
-        Logger.infoStart ('Write ${project.settings.name}.hx');
         writeMain ();
-        Logger.endInfoSuccess ();                         
+        writeCompletionHxml ();
 
         Logger.success ("Project created");
     }
