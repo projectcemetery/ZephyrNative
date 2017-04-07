@@ -31,7 +31,7 @@ class ProcessHelper {
      *  @param cmd - 
      *  @param args - 
      */
-    public static function launch (cmd : String, args : Array<String>, call : String -> Void) {        
+    public static function launch (cmd : String, args : Array<String>) {        
         var proc : Process = {
             if (args.length > 0) {
                 new Process (cmd, args);
@@ -53,10 +53,10 @@ class ProcessHelper {
                 }
             } catch (e : Dynamic) {}
         }
-        if (sb.length < 1) {
-            call (null);
-        } else {
-            call (sb.toString ());
+
+        if (sb.length > 0) {
+            Logger.endInfoError ();
+            throw sb.toString ();
         }        
     }
 }

@@ -99,21 +99,7 @@ class ProjectSettings {
     /**
      *  Fields for settings
      */
-    public var settings : ProjectSettingsFields;
-
-    /**
-     *  android.hxml template
-     */    
-    inline static var androidHxml : String = 
-"-cp src
--D analyzer-optimize
--D no-compilation
--dce full
--lib ZephyrNative
--java ./build/android/src/main/java
-${packageName}.${projectName}
-${javaLibs}";
-    
+    public var settings : ProjectSettingsFields;    
 
     /**
      *  Load project settings
@@ -162,9 +148,10 @@ ${javaLibs}";
         for (e in settings.javaLibs) {
             var path = Path.join ([libDir, libsDir, androidLib]);
             stringBuf.add ('-java-lib ${path}');
-        }        
+        }
 
-        var text = androidHxml.replace (packageNameParam, settings.packageName);
+        var template = FileUtil.getTemplate ("android.hxml");
+        var text = template.replace (packageNameParam, settings.packageName);
         text = text.replace (projectNameParam, settings.name);
         text = text.replace (javaLibsParam, stringBuf.toString ());
         return text;

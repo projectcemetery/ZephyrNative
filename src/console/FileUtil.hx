@@ -12,6 +12,25 @@ import sys.io.Process;
 class FileUtil {
 
     /**
+     *  Directory of lib
+     */
+    public static var libDir (default, null) : String;
+
+    /**
+     *  Directory of project
+     */
+    public static var workDir (default, null) : String;
+
+    /**
+     *  On class create
+     */
+    static function __init__ () {
+        libDir = Sys.getCwd ();
+        var args = Sys.args ();
+        workDir = args[args.length - 1];
+    }
+
+    /**
      *  Copy all files from directory recursive
      */
     public static function copyFromDir (src : String, dest : String) : Void {
@@ -19,7 +38,7 @@ class FileUtil {
             var fullSrc = FileSystem.absolutePath (src);
             var fullDest = FileSystem.absolutePath (dest);
             
-            if (!FileSystem.exists (fullSrc)) throw "Source directory not exists";
+            if (!FileSystem.exists (fullSrc)) throw 'Source directory ${fullSrc} not exists';
             if (!FileSystem.exists (fullDest)) FileSystem.createDirectory (fullDest);
 
             var allFiles = FileSystem.readDirectory (fullSrc);        
@@ -48,8 +67,8 @@ class FileUtil {
      *  Return template text
      *  @param name - 
      */
-    public static function getTemplate (name : String) : String {
-        var path = Path.join (["bundle", "templates", name]);
+    public static function getTemplate (templateName : String) : String {
+        var path = Path.join ([libDir, "bundle", "templates", templateName]);
         return File.getContent (path);
     }
 }

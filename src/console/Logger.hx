@@ -24,9 +24,44 @@ package console;
 import neko.Lib;
 
 /**
+ *  Color
+ */
+@:enum
+abstract Color(String) from String to String {
+    var Red = "31m";
+    var Green = "32m";
+}
+
+/**
  *  Log text
  */
 class Logger {
+
+    /**
+     *  Print text with color
+     *  @param text - 
+     *  @param color - 
+     */
+    static function print (text : String, color : Color) {
+        if (Sys.systemName () != "Windows") {
+            Lib.print ('\033[0;${color}${text}\033[0m');
+        } else {
+            Lib.print (text);
+        }
+    }
+
+    /**
+     *  Print text line with color
+     *  @param text - 
+     *  @param color - 
+     */
+    static function printLn (text : String, color : Color) {
+        if (Sys.systemName () != "Windows") {
+            Lib.println ('\033[0;${color}${text}\033[0m');
+        } else {
+            Lib.println (text);
+        }
+    }
 
     /**
      *  Log info line
@@ -45,50 +80,32 @@ class Logger {
     }
 
     /**
-     *  Start Log info
-     *  @param e - 
+     *  Start Log info     
      */
     public static inline function endInfoSuccess () {
-        if (Sys.systemName () != "Windows") {
-            Lib.println ('\033[0;32m - DONE\033[0m');
-        } else {
-            Lib.println (" - DONE");
-        }
+        printLn (" - DONE", Color.Green);
     }
 
     /**
-     *  Start Log info
-     *  @param e - 
+     *  Start Log info     
      */
     public static inline function endInfoError () {
-        if (Sys.systemName () != "Windows") {
-            Lib.println ('\033[0;31m - ERROR\033[0m');
-        } else {
-            Lib.println (" - ERROR");
-        }
+        printLn (" - ERROR", Color.Red);
     }
 
     /**
      *  Log info line
-     *  @param e - 
+     *  @param text - 
      */
-    public static inline function success (e : String) {
-        if (Sys.systemName () != "Windows") {
-            Lib.println ('\033[0;32m${e}\033[0m');
-        } else {
-            Lib.println (e);
-        }
+    public static inline function success (text : String) {
+        printLn (text, Color.Green);
     }
 
     /**
      *  Log error line
-     *  @param e - 
+     *  @param text - 
      */
-    public static inline function error (e : String) {
-        if (Sys.systemName () != "Windows") {
-            Lib.println ('\033[0;31m${e}\033[0m');
-        } else {
-            Lib.println (e);
-        }
+    public static inline function error (text : String) {
+        printLn (text, Color.Red);
     }
 }

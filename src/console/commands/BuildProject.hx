@@ -15,11 +15,6 @@ using StringTools;
 class BuildProject {
 
     /**
-     *  Path from which util was launched
-     */
-    var workPath : String;
-
-    /**
      *  Build/install target
      */
     var target : Target;
@@ -30,19 +25,25 @@ class BuildProject {
     var project : ProjectSettings;
 
     /**
-     *  Path to lib
-     */
-    var libDir : String;
-
-    /**
      *  Write android.hxml
      *  @param path - 
      */
-    function writeAndroidHxml (libPath : String) {
+    function writeAndroidHxml () {
         Logger.infoStart ("Writing android.hxml");
-        var text = project.generateAndroidHxml (libPath);
+        var text = project.generateAndroidHxml (FileUtil.libDir);
         File.saveContent ("android.hxml", text);
         Logger.endInfoSuccess ();
+    }
+
+    /**
+     *  Copy build data from bundle if not exists
+     */
+    function writeBuildData () {
+        var workBuild = Path.join ([FileUtil.workDir, "build", "android"]); 
+        if (!FileSystem.exists (workBuild)) {
+            var libBuild = Path.join ([FileUtil.libDir, "bundle", "build", "android"]);            
+            FileUtil.copyFromDir (libBuild, workBuild);
+        }        
     }
 
     /**
@@ -50,34 +51,45 @@ class BuildProject {
      */
     function compileHaxeCode () {
         Logger.infoStart ("Compiling haxe code");
-        ProcessHelper.launch ("haxe", [ProjectSettings.androidHxmlName], function (error : String) {
-            if (error != null) {
-                Logger.endInfoError ();
-                throw (error);
-            }
-        });
+        ProcessHelper.launch ("haxe", [ProjectSettings.androidHxmlName]);
+        Logger.endInfoSuccess ();
     }
 
     /**
      *  Save activity text
      */
-    function saveActivityText (activityText : String) {
+    function saveActivityText () {
+        var activityText = FileUtil.getTemplate ("ActivityText.java");
+
         var activityName = project.getActivityName ();
         var text = activityText.replace (ProjectSettings.activityNameParam, activityName);
         text = text.replace (ProjectSettings.projectNameParam, project.settings.name);
         text = text.replace (ProjectSettings.packageNameParam, project.settings.packageName);
 
-        var path = Path.join ([workPath,"build", "android", "src", "main", "java", "src" ,"zephyr", '${activityName}.java']);
-        File.saveContent (path, text);
-
-        var androidProjPath = Path.join ([workPath, "build", "android"]);
-        Sys.setCwd (androidProjPath);        
+        var path = Path.join ([FileUtil.workDir,"build", "android", "src", "main", "java", "src" ,"zephyr", '${activityName}.java']);
+        File.saveContent (path, text);               
     }
+
+    /**
+     *  Fix AndroidManifest.xml
+     */
+    function writeManifest () {
+        var name = "AndroidManifest.xml";
+        var content = FileUtil.getTemplate (name);        
+        content = content.replace ("${packageName}", project.settings.packageName);
+        content = content.replace ("${projectName}", project.settings.name);
+        content = content.replace ("${activityName}", project.getActivityName ());        
+        var path = Path.join ([FileUtil.workDir, "build", "android", "src", "main", name]);
+        File.saveContent (path, content);
+    } 
 
     /**
      *  Gradle build/install
      */
     function buildInstall (isInstall) {
+        var androidProjPath = Path.join ([FileUtil.workDir, "build", "android"]);
+        Sys.setCwd (androidProjPath); 
+
         var cmd = {
             if (Sys.systemName () == "Windows") {
                 "gradlew.bat";
@@ -89,24 +101,12 @@ class BuildProject {
         // Only build            
         if (!isInstall) {
             Logger.infoStart ("Assembling APK");            
-            ProcessHelper.launch (cmd, ["assembleDebug"], function (error : String) {
-                if (error != null) {
-                    throw (error);
-                } else {
-                     Logger.endInfoError ();
-                }
-            });
+            ProcessHelper.launch (cmd, ["assembleDebug"]);
             Logger.endInfoSuccess ();
         // Build and install
         } else {
             Logger.infoStart ("Assembling and installing APK");                
-            ProcessHelper.launch (cmd, ["installDebug"], function (error : String) {
-                if (error != null) {
-                    throw (error);
-                } else {
-                     Logger.endInfoError ();
-                }
-            });
+            ProcessHelper.launch (cmd, ["installDebug"]);
             Logger.endInfoSuccess ();
         }
     }
@@ -116,15 +116,14 @@ class BuildProject {
      *  @param isInstall - 
      */
     function buildAndroid (isInstall : Bool) {
-        trace ("SHIT");
-        // Get templates
-        var activityText = FileUtil.getTemplate ("ActivityText.java");        
-        Sys.setCwd (workPath);
-        
-        writeAndroidHxml (libDir);        
+        // Get templates                
+        Sys.setCwd (FileUtil.workDir);        
+        writeAndroidHxml ();
+        writeBuildData ();
         compileHaxeCode ();
-        saveActivityText (activityText);        
-        buildInstall (isInstall);
+        saveActivityText ();
+        writeManifest ();
+        buildInstall (isInstall);                      
     }
 
     /**
@@ -138,17 +137,16 @@ class BuildProject {
      *  Constructor
      */
     public function new (params : Array<String>, other : Rest<String>) {
-        if (other.length < 1) throw "Wrong parameters";
-        workPath = other[0];
+        if (other.length < 1) throw "Wrong parameters";        
         target = params[0];
     }
 
     /**
      *  Run build
      */
-    public function run (isInstall : Bool = false) {
-        libDir = Sys.getCwd ();        
-        project = ProjectSettings.load (ProjectSettings.projectNameDef); 
+    public function run (isInstall : Bool = false) {        
+        var path = Path.join ([FileUtil.workDir, ProjectSettings.projectNameDef]);
+        project = ProjectSettings.load (path); 
               
         switch (target) {
             case Target.Android : buildAndroid (isInstall);
@@ -156,6 +154,6 @@ class BuildProject {
             default: {
                 throw "Unsupported platform";
             }
-        }        
+        }
     }
 }

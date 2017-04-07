@@ -33,6 +33,11 @@ using StringTools;
 class CreateNewProject {
 
     /**
+     *  Path of project
+     */
+    var workDir : String;
+
+    /**
      *  Params for command
      */
     var params : Rest<String>;
@@ -43,62 +48,27 @@ class CreateNewProject {
      */
     var project : ProjectSettings;
 
-    var mainText : String = 
-"package ${packageName};
-
-import zephyr.app.IApplication;
-import zephyr.app.ApplicationContext;
-
-/**
- *  Entry point for Zephyr Application
- */
-@:keep
-class ${projectName} implements IApplication {
-
     /**
-     *  Call when application ready
-     *  @param context
+     *  Write project     
      */
-    public function onReady (context : ApplicationContext) : Void {
-        // Register controller: 
-        // context.registerController (MyControllerClass);
-        // Navigate to controller:
-        // context.navigate (MyControllerClass);
-    }
-}
-";
-
-    /**
-     *  Write project
-     *  @param workPath - 
-     */
-    function writeProjectFile (workPath : String) {
-        var path = Path.join ([workPath, ProjectSettings.projectNameDef]);
+    function writeProjectFile () {
+        var path = Path.join ([workDir, ProjectSettings.projectNameDef]);
         project.save (path);
-    }
-
-    /**
-     *  Fix AndroidManifest.xml
-     */
-    function fixManifest (path : String) {
-        var content = File.getContent (path);
-        content = content.replace ("${packageName}", project.settings.packageName);
-        content = content.replace ("${projectName}", project.settings.name);
-        content = content.replace ("${activityName}", project.getActivityName ());
-        File.saveContent (path, content);
-    }    
+    }       
 
     /**
      *  Write Main.hx
      *  @param workPath - 
      */
-    function writeMain (workPath : String) {
+    function writeMain () {
         var packPaths = project.settings.packageName.split (".");
 
-        var path = [workPath, "src"].concat (packPaths);        
+        var path = [workDir, "src"].concat (packPaths);        
         var packagePath = Path.join (path);
         FileSystem.createDirectory (packagePath);        
         var filePath = Path.join ([packagePath, '${project.settings.name}.hx']); 
+
+        var mainText = FileUtil.getTemplate ("MainText.hx");
         var text = mainText.replace (ProjectSettings.packageNameParam, project.settings.packageName);
         text = text.replace (ProjectSettings.projectNameParam, project.settings.name);
         File.saveContent (filePath, text);
@@ -128,16 +98,15 @@ class ${projectName} implements IApplication {
     /**
      *  Run command
      */
-    public function run () {        
-        var launchDir = params[params.length - 1];
-        var workDir = Path.join ([ launchDir, project.settings.name ]);
-        var libDir = FileSystem.fullPath (".");
+    public function run () {
+        workDir = Path.join ([FileUtil.workDir, project.settings.name]);
+
         if (FileSystem.exists (workDir)) throw 'Folder ${workDir} already exists';
         Logger.infoStart ('Creating directory ${workDir}');
         FileSystem.createDirectory (workDir);            
         Logger.endInfoSuccess ();
 
-        var srcDir = Path.join ([ libDir, "bundle", "project" ]);
+        var srcDir = Path.join ([ FileUtil.libDir, "bundle", "project" ]);
         var destDir = workDir;
         Logger.infoStart ('Coping project files from ${srcDir} to ${destDir}');
         FileUtil.copyFromDir (srcDir, destDir);
@@ -145,18 +114,13 @@ class ${projectName} implements IApplication {
 
         // Write project file
         Logger.infoStart ("Writing project settings");
-        writeProjectFile (workDir);
+        writeProjectFile ();
         Logger.endInfoSuccess ();
 
         // Write Application
         Logger.infoStart ('Write ${project.settings.name}.hx');
-        writeMain (workDir);
-        Logger.endInfoSuccess ();
-
-        // Fix manifest
-        /*Logger.info ("Fixing android manifest");
-        var manifestPath = Path.join ([ workDir, "build", "android", "src", "main", "AndroidManifest.xml" ]);
-        fixManifest (manifestPath);*/                        
+        writeMain ();
+        Logger.endInfoSuccess ();                         
 
         Logger.success ("Project created");
     }

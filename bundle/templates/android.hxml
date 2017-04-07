@@ -1,0 +1,10 @@
+-cp src
+-D analyzer-optimize
+-D no-compilation
+-D android
+-dce full
+-lib ZephyrNative
+zephyr.app.AndroidApplication
+-java ./build/android/src/main/java
+${packageName}.${projectName}
+${javaLibs}
