@@ -30,6 +30,11 @@ import zephyr.style.Style;
  */
 class Tag extends TagContainer {
 
+    /**
+     *  Tag name
+     */
+    public var name (default, null) : String; 
+
      /**
       *  Id of tag
       */
@@ -44,6 +49,17 @@ class Tag extends TagContainer {
       *  Css style
       */
      public var style : Style;
+
+     /**
+      *  Parent tag
+      */
+     public var parent : Tag;
+
+     /**
+      *  Custom style. 
+      *  TODO: implement from options
+      */
+     public var customStyle : Style;
 
      /**
       *  Parse css classes string. Like: mystyle another_style good_style
@@ -65,10 +81,18 @@ class Tag extends TagContainer {
       *  Constructor
       *  @param tags - 
       */
-     public function new (?options : TagOptions, ?tags : Array<Tag>) {
+     public function new (name : String, ?options : TagOptions, ?tags : Array<Tag>) {
          super (tags);
+         this.name = name;
          id = "";
          styles = new Array<String> ();
+
+         // Apply parent
+         if (tags != null) {
+             for (tag in tags) {
+                 tag.parent = this;
+             }
+         }
 
          if (options != null) {
              if (options.id != null) id = options.id;

@@ -144,11 +144,24 @@ class BuildProject {
     }
 
     /**
+     *  Write index.html
+     */
+    function writeIndex () {
+        Logger.infoStart ('Writing index.html');
+        var indexText = FileUtil.getTemplate ("index.html");        
+        var text = indexText.replace (ProjectSettings.projectNameParam, project.settings.packageName);      
+        var path = Path.join ([FileUtil.workDir,"build", "web", "index.html"]);
+        File.saveContent (path, text);
+        Logger.endInfoSuccess ();
+    }
+
+    /**
      *  Build for web
      */
     function buildWeb () {        
         writeHxml ();
         writeBuildData ();
+        writeIndex ();
         compileHaxeCode ();
     }
 

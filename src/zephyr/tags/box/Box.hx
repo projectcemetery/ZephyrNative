@@ -19,7 +19,7 @@
  * THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
-package zephyr.tags;
+package zephyr.tags.box;
 
 #if android
 import android.view.View;
@@ -28,13 +28,17 @@ import android.widget.LinearLayout.LinearLayout_LayoutParams;
 import android.content.Context;
 #end
 
+#if web
+import js.Browser;
+#end
+
 import zephyr.app.ApplicationContext;
 import zephyr.app.NativeView;
 
 /**
- *  Vertical box layout
+ *  Box layout
  */
-class VBox extends Tag {
+class Box extends Tag {
 
     #if android
     /**
@@ -47,8 +51,8 @@ class VBox extends Tag {
         var params = new LinearLayout_LayoutParams (-1,-1);
 
         var childs = renderChilds (context);
-        for (i in childs) {
-            layout.addView (i);
+        for (child in childs) {
+            layout.addView (child);
         }
 
         layout.setLayoutParams (params);
@@ -57,12 +61,31 @@ class VBox extends Tag {
     }
     #end
 
+    #if web
+    /**
+     *  Render for web
+     *  @param context - 
+     *  @return NativeView
+     */
+    function renderWeb (context : ApplicationContext) : NativeView {
+        var div = Browser.document.createDivElement ();
+
+        // Render childs
+        var childs = renderChilds (context);
+        for (child in childs) {
+            div.appendChild (child);
+        }
+
+        return div;
+    }
+    #end
+
     /**
       *  Constructor
       *  @param tags - 
       */
-     public function new (?options : TagOptions, ?tags : Array<Tag>) {
-         super (options, tags);
+     public function new (options : TagOptions, ?tags : Array<Tag>) {
+         super ("box", options, tags);
      }
 
      /**
@@ -72,9 +95,11 @@ class VBox extends Tag {
       */
      override public function render (context : ApplicationContext) : NativeView {
          #if android
-         renderAndroid (context);
-         #end
-
-         return null;
+         return renderAndroid (context);
+         #elseif web         
+         return renderWeb (context);
+         #else
+         throw "Unsupported platform";
+         #end         
      }
 }

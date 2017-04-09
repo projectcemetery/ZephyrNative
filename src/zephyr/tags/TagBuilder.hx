@@ -1,5 +1,6 @@
 package zephyr.tags;
 
+import zephyr.tags.box.*;
 import zephyr.tags.textview.*;
 import zephyr.tags.TagOptions;
 
@@ -13,8 +14,8 @@ class TagBuilder {
      *  @param childs - 
      *  @return VBox
      */
-    public static function vbox (?options : TagOptions, ?childs : Array<Tag>) : VBox {
-        return new VBox (childs);
+    public static function box (options : TagOptions, ?childs : Array<Tag>) : Box {
+        return new Box (options, childs);
     }
 
     /**

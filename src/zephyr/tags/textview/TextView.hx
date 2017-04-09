@@ -27,6 +27,10 @@ import android.widget.LinearLayout.LinearLayout_LayoutParams;
 import android.content.Context;
 #end
 
+#if web
+import js.Browser;
+#end
+
 import zephyr.app.ApplicationContext;
 import zephyr.app.NativeView;
 
@@ -40,6 +44,7 @@ class TextView extends Tag {
      */
     var options : TextViewOptions;
 
+    #if android
     /**
      *  Render for android
      */
@@ -48,12 +53,26 @@ class TextView extends Tag {
         textView.setText (options.text);
         return textView;
     }
+    #end
+
+    #if web
+    /**
+     *  Render for web
+     *  @param context - 
+     *  @return NativeView
+     */
+    function renderWeb (context : ApplicationContext) : NativeView {
+        var div = Browser.document.createDivElement ();
+        div.innerText = options.text;
+        return div;
+    }
+    #end
 
     /**
       *  Constructor 
       */
      public function new (options : TextViewOptions) {
-         super (null);
+         super ("listview");
          this.options = options;
      }
 
@@ -65,6 +84,10 @@ class TextView extends Tag {
      override public function render (context : ApplicationContext) : NativeView {
          #if android
          return renderAndroid (context);
+         #end
+
+         #if web
+         return renderWeb (context);
          #end
          
          return null;

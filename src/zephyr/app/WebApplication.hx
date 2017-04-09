@@ -35,14 +35,16 @@ class WebApplication implements INativeApplication {
     /**
      *  Entry point
      */
-    public static function main () {        
-        var entryPoint = EntryPointHelper.getEntryPoint();
-        var cls = Type.resolveClass (entryPoint);        
-        if (cls != null) {
-            var app = new WebApplication ();
-            var inst : IApplication = cast Type.createEmptyInstance (cls);
-            inst.onReady (new ApplicationContext (app));
-        }
+    public static function main () {
+        Browser.document.addEventListener ("DOMContentLoaded", function () {
+            var entryPoint = EntryPointHelper.getEntryPoint();
+            var cls = Type.resolveClass (entryPoint);
+            if (cls != null) {
+                var app = new WebApplication ();
+                var inst : IApplication = cast Type.createEmptyInstance (cls);
+                inst.onReady (new ApplicationContext (app));
+            }
+        });        
     }
 
     /**
@@ -54,9 +56,8 @@ class WebApplication implements INativeApplication {
      *  Apply view
      *  @param view - 
      */
-    public function setView (view : NativeView) : Void {
-        Browser.document.clear ();
-        Browser.document.appendChild (view);
+    public function setView (view : NativeView) : Void {        
+        Browser.document.body.appendChild (view);
     }    
 }
 #end

@@ -47,7 +47,7 @@ class Page extends TagContainer {
     }
 
     /**
-     *  
+     *  Create page layout
      *  @return Tag
      */
     public function layout () : Tag {
