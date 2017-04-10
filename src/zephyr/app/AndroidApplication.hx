@@ -47,6 +47,23 @@ class AndroidApplication extends android.app.Activity implements INativeApplicat
     }
 
     /**
+     *  Get asset by name
+     *  @param name - asset name
+     *  @return Bytes
+     */
+    public function getAsset (name : String) : Bytes {
+        return null;
+    }
+
+    /**
+     *  Add styles to app
+     *  @param text - stylesheet
+     */
+    public function addStyle (text : String) : Void {
+        
+    }
+
+    /**
      *  Apply view
      *  @param view - 
      */

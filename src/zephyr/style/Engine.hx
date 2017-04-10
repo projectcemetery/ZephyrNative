@@ -52,20 +52,20 @@ class Engine {
 	 *  Apply style
 	 *  @param c - 
 	 */
-	public function applyClasses( c : Tag) {
-		var s = new Style();
-		c.style = s;
+	public function applyClasses (tag : Tag) {
+		var style = new Style();
+		tag.style = style;
 		var rules = [];
-		for( r in this.rules ) {
-			if( !ruleMatch(r.c, c) )
+		for (rule in this.rules) {
+			if(!ruleMatch(rule.c, tag))
 				continue;
-			rules.push(r);
+			rules.push(rule);
 		}
 		rules.sort(sortByPriority);
-		for( r in rules )
-			s.apply(r.s);
-		if( c.customStyle != null )
-			s.apply(c.customStyle);
+		for(rule in rules )
+			style.apply(rule.s);
+		if(tag.customStyle != null )
+			style.apply(tag.customStyle);
 	}
 
 	/**

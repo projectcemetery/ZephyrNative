@@ -25,10 +25,12 @@ package zephyr.app;
 import android.app.Activity;
 #end
 
+import haxe.io.Bytes;
 import zephyr.controller.Controller;
 import zephyr.tags.Tag;
+import zephyr.style.Engine;
 
-class ApplicationContext {
+class ApplicationContext {    
 
     /**
      *  Owner application
@@ -46,11 +48,17 @@ class ApplicationContext {
     var currentController : Controller;
 
     /**
+     *  Engine for styling
+     */
+    var styleEngine : Engine;
+
+    /**
      *  Constructor
      */
     public function new (owner : INativeApplication) {
         this.owner = owner;
         controllers = new Map<String, Controller> ();
+        styleEngine = new Engine ();
     }
 
     /**
@@ -80,9 +88,26 @@ class ApplicationContext {
      *  Set view
      *  @param view - 
      */
-    public function setView (view : Tag) : Void {
+    public function setView (view : Tag) : Void {        
         var view = view.render (this);
         owner.setView (view);
+    }
+
+    /**
+     *  Get asset by name
+     *  @param name - asset name
+     *  @return Bytes
+     */
+    public function getAsset (name : String) : Bytes {
+        return owner.getAsset (name);
+    }
+
+    /**
+     *  Add styles to app
+     *  @param text - stylesheet
+     */
+    public function addStyle (text : String) : Void {
+        owner.addStyle (text);
     }
 
     #if android

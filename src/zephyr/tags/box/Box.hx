@@ -68,15 +68,15 @@ class Box extends Tag {
      *  @return NativeView
      */
     function renderWeb (context : ApplicationContext) : NativeView {
-        var div = Browser.document.createDivElement ();
+        var box = Browser.document.createElement ("box");
 
         // Render childs
         var childs = renderChilds (context);
         for (child in childs) {
-            div.appendChild (child);
+            box.appendChild (child);
         }
 
-        return div;
+        return box;
     }
     #end
 

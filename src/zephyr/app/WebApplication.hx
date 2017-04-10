@@ -22,6 +22,7 @@
 package zephyr.app;
 
 #if web
+import haxe.io.Bytes;
 import js.Browser;
 import zephyr.app.NativeView;
 import zephyr.app.EntryPointHelper;
@@ -51,6 +52,30 @@ class WebApplication implements INativeApplication {
      *  Constructor
      */
     public function new () {}
+
+    /**
+     *  Get asset by name
+     *  @param name - asset name
+     *  @return Bytes
+     */
+    public function getAsset (name : String) : Bytes {
+        var hostname = Browser.location.hostname;
+        if (hostname == "") throw "Need launch from server";
+        var data = haxe.Http.requestUrl('/assets/${name}');
+        return Bytes.ofString (data);
+    }
+
+
+    /**
+     *  Add styles to app
+     *  @param text - stylesheet
+     */
+    public function addStyle (text : String) : Void {
+        var style = Browser.document.createStyleElement ();
+        style.type = 'text/css';
+        style.appendChild (Browser.document.createTextNode (text));
+        Browser.document.head.appendChild (style);
+    }
 
     /**
      *  Apply view

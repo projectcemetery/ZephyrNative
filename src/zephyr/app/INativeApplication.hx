@@ -21,6 +21,8 @@
 
 package zephyr.app;
 
+import haxe.io.Bytes;
+
 /**
  *  Interface to native application. Like: Activity
  */
@@ -31,4 +33,17 @@ interface INativeApplication {
      *  @param view - 
      */
     public function setView (view : NativeView) : Void;
+
+    /**
+     *  Get asset by name
+     *  @param name - asset name
+     *  @return Bytes
+     */
+    public function getAsset (name : String) : Bytes;
+
+    /**
+     *  Add styles to app
+     *  @param text - stylesheet
+     */
+    public function addStyle (text : String) : Void;
 }

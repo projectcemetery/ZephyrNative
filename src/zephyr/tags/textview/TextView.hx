@@ -62,9 +62,9 @@ class TextView extends Tag {
      *  @return NativeView
      */
     function renderWeb (context : ApplicationContext) : NativeView {
-        var div = Browser.document.createDivElement ();
-        div.innerText = options.text;
-        return div;
+        var textview = Browser.document.createElement ("textview");
+        textview.innerText = options.text;
+        return textview;
     }
     #end
 
