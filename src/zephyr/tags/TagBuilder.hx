@@ -14,8 +14,17 @@ class TagBuilder {
      *  @param childs - 
      *  @return VBox
      */
-    public static function box (options : TagOptions, ?childs : Array<Tag>) : Box {
-        return new Box (options, childs);
+    public static function vbox (options : TagOptions, ?childs : Array<Tag>) : Box {
+        return new VBox (options, childs);
+    }
+
+    /**
+     *  Add horizontal box tag
+     *  @param childs - 
+     *  @return HBox
+     */
+    public static function hbox (options : TagOptions, ?childs : Array<Tag>) : Box {
+        return new HBox (options, childs);
     }
 
     /**

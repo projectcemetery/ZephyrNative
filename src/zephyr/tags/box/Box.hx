@@ -68,7 +68,7 @@ class Box extends Tag {
      *  @return NativeView
      */
     function renderWeb (context : ApplicationContext) : NativeView {
-        var box = Browser.document.createElement ("box");
+        var box = Browser.document.createElement (name);
 
         // Render childs
         var childs = renderChilds (context);
@@ -84,8 +84,8 @@ class Box extends Tag {
       *  Constructor
       *  @param tags - 
       */
-     public function new (options : TagOptions, ?tags : Array<Tag>) {
-         super ("box", options, tags);
+     public function new (name : String, options : TagOptions, ?tags : Array<Tag>) {
+         super (name, options, tags);
      }
 
      /**

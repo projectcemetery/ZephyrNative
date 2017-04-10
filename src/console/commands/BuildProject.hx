@@ -119,7 +119,7 @@ class BuildProject {
 
         // Only build            
         if (!isInstall) {
-            Logger.infoStart ("Assembling APK");            
+            Logger.infoStart ("Assembling APK");
             ProcessHelper.launch (cmd, ["assembleDebug"]);
             Logger.endInfoSuccess ();
         // Build and install
@@ -128,6 +128,45 @@ class BuildProject {
             ProcessHelper.launch (cmd, ["installDebug"]);
             Logger.endInfoSuccess ();
         }
+    }
+
+    /**
+     *  Copy assets to build
+     */
+    function copyAssets () {
+        Logger.infoStart ("Start copy assets");
+
+        var destPath = Path.join ([FileUtil.workDir, "build", target, "assets"]);
+        var srcPath = Path.join ([FileUtil.workDir, "assets"]);
+        if (!FileSystem.exists (srcPath)) {
+            Logger.endInfoSuccess ();
+            return;
+        }
+        if (!FileSystem.exists (destPath)) FileSystem.createDirectory (destPath);        
+        FileUtil.copyFromDir (srcPath, destPath);
+        Logger.endInfoSuccess ();
+    }
+
+    /**
+     *  Start web server for
+     */
+    function startServer () {
+        var path = Path.join ([FileUtil.workDir, "build", "web"]);
+        if (!FileSystem.exists (path)) throw "Can't start web server";
+        Sys.setCwd (path);
+        Logger.infoStart ("Start browser\n");
+        ProcessHelper.launch ("xdg-open", ["http://localhost:8000"]);
+        Logger.infoStart ("Start web server http://localhost:8000\n");
+        ProcessHelper.launch ("python", ["-m", "SimpleHTTPServer", "8000"]);
+        Logger.endInfoSuccess ();
+
+        // TODO: tarantool web server
+        // If not Windows, start tarantool
+        /*if (Sys.systemName () != "Windows") {    
+            //ProcessHelper.launch ("tarantool", ["installDebug"]);
+        } else {
+            // Start python http server
+        }*/
     }
 
     /**
@@ -158,11 +197,13 @@ class BuildProject {
     /**
      *  Build for web
      */
-    function buildWeb () {        
+    function buildWeb (isInstall : Bool) {        
         writeHxml ();
         writeBuildData ();
         writeIndex ();
         compileHaxeCode ();
+        copyAssets ();
+        if (isInstall) startServer ();
     }
 
     /**
@@ -184,7 +225,7 @@ class BuildProject {
         Sys.setCwd (FileUtil.workDir);
         switch (target) {
             case Target.Android : buildAndroid (isInstall);
-            case Target.Web : buildWeb ();
+            case Target.Web : buildWeb (isInstall);
             default: throw "Unsupported platform";
         }
     }

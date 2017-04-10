@@ -65,7 +65,6 @@ class WebApplication implements INativeApplication {
         return Bytes.ofString (data);
     }
 
-
     /**
      *  Add styles to app
      *  @param text - stylesheet

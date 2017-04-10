@@ -19,33 +19,18 @@
  * THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
-package console;
+package zephyr.tags.box;
 
-import sys.io.Process;
-import console.Logger;
-
-class ProcessHelper {
+/**
+ *  Vertical box layout
+ */
+class HBox extends Box {
 
     /**
-     *  Launch process and call with error text if exists
-     *  @param call - 
-     *  @param cmd - 
-     *  @param args - 
-     */
-    public static function launch (cmd : String, args : Array<String>, printStdout : Bool = false) {        
-        var proc : Process = {
-            if (args.length > 0) {
-                new Process (cmd, args);
-            } else {
-                new Process (cmd);
-            }
-        };
-        var code = proc.exitCode (true);        
-        if (code != 0) {            
-            throw proc.stderr.readAll ().toString ();            
-        }
-        if (printStdout) {            
-            Logger.info (proc.stdout.readAll ().toString ());
-        }
-    }
+      *  Constructor
+      *  @param tags - 
+      */
+     public function new (options : TagOptions, ?tags : Array<Tag>) {
+         super ("hbox", options, tags);
+     }
 }

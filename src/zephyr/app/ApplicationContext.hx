@@ -59,6 +59,8 @@ class ApplicationContext {
         this.owner = owner;
         controllers = new Map<String, Controller> ();
         styleEngine = new Engine ();
+        var asset = getAsset ("default.css");
+        addStyle (asset.toString ());
     }
 
     /**
