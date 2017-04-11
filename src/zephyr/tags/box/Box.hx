@@ -44,7 +44,7 @@ class Box extends Tag {
     /**
      * Render for android
     **/
-    function renderAndroid (context : ApplicationContext) {
+    override function renderAndroid (context : ApplicationContext) : NativeView {
         var layout =  new LinearLayout (context.getAndroidActivity ());
         layout.setOrientation(LinearLayout.VERTICAL);        
         layout.setWeightSum (1);
@@ -67,7 +67,7 @@ class Box extends Tag {
      *  @param context - 
      *  @return NativeView
      */
-    function renderWeb (context : ApplicationContext) : NativeView {
+    override function renderWeb (context : ApplicationContext) : NativeView {
         var box = Browser.document.createElement (name);
 
         // Render childs
@@ -86,20 +86,5 @@ class Box extends Tag {
       */
      public function new (name : String, options : TagOptions, ?tags : Array<Tag>) {
          super (name, options, tags);
-     }
-
-     /**
-      *  Render page
-      *  @param context - 
-      *  @return View
-      */
-     override public function render (context : ApplicationContext) : NativeView {
-         #if android
-         return renderAndroid (context);
-         #elseif web         
-         return renderWeb (context);
-         #else
-         throw "Unsupported platform";
-         #end         
      }
 }

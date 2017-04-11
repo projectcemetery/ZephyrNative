@@ -83,11 +83,11 @@ class Engine {
 	 *  @param c - 
 	 *  @param d - 
 	 */
-	public static function ruleMatch( c : CssClass, d : Tag) {
-		if( c.pseudoClass != null ) {
-			var pc = ":" + c.pseudoClass;
+	public static function ruleMatch (css : CssClass, tag : Tag) {
+		if (css.pseudoClass != null) {
+			var pc = ":" + css.pseudoClass;
 			var found = false;
-			for( cc in d.styles )
+			for( cc in tag.styles )
 				if( cc == pc ) {
 					found = true;
 					break;
@@ -95,30 +95,30 @@ class Engine {
 			if( !found )
 				return false;
 		}
-		if( c.className != null ) {
-			if( d.styles == null )
+		if (css.className != null) {
+			if (tag.styles == null )
 				return false;
 			var found = false;
-			for( cc in d.styles )
-				if( cc == c.className ) {
+			for( cc in tag.styles )
+				if( cc == css.className ) {
 					found = true;
 					break;
 				}
 			if( !found )
 				return false;
 		}
-		if( c.node != null && c.node != d.name )
+		if (css.node != null && css.node != tag.name)
 			return false;
-		if( c.id != null && c.id != d.id )
+		if (css.id != null && css.id != tag.id)
 			return false;
-		if( c.parent != null ) {
-			var p = d.parent;
-			while( p != null ) {
-				if( ruleMatch(c.parent, p) )
+		if (css.parent != null ) {
+			var p = tag.parent;
+			while (p != null) {
+				if (ruleMatch(css.parent, p))
 					break;
 				p = p.parent;
 			}
-			if( p == null )
+			if (p == null)
 				return false;
 		}
 		return true;

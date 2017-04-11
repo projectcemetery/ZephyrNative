@@ -48,7 +48,7 @@ class TextView extends Tag {
     /**
      *  Render for android
      */
-    function renderAndroid (context : ApplicationContext) : NativeView {
+    override function renderAndroid (context : ApplicationContext) : NativeView {
         var textView = new android.widget.TextView (context.getAndroidActivity ());
         textView.setText (options.text);
         return textView;
@@ -61,7 +61,7 @@ class TextView extends Tag {
      *  @param context - 
      *  @return NativeView
      */
-    function renderWeb (context : ApplicationContext) : NativeView {
+    override function renderWeb (context : ApplicationContext) : NativeView {
         var textview = Browser.document.createElement ("textview");
         textview.innerText = options.text;
         return textview;
@@ -72,24 +72,7 @@ class TextView extends Tag {
       *  Constructor 
       */
      public function new (options : TextViewOptions) {
-         super ("listview");
+         super ("textview");
          this.options = options;
-     }
-
-     /**
-      *  Render TextView
-      *  @param context - 
-      *  @return View
-      */
-     override public function render (context : ApplicationContext) : NativeView {
-         #if android
-         return renderAndroid (context);
-         #end
-
-         #if web
-         return renderWeb (context);
-         #end
-         
-         return null;
-     }
+     }     
 }

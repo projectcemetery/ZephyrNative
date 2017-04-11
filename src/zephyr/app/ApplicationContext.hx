@@ -59,6 +59,7 @@ class ApplicationContext {
         this.owner = owner;
         controllers = new Map<String, Controller> ();
         styleEngine = new Engine ();
+        // Apply default style
         var asset = getAsset ("default.css");
         addStyle (asset.toString ());
     }
@@ -90,7 +91,7 @@ class ApplicationContext {
      *  Set view
      *  @param view - 
      */
-    public function setView (view : Tag) : Void {        
+    public inline function setView (view : Tag) : Void {        
         var view = view.render (this);
         owner.setView (view);
     }
@@ -100,7 +101,7 @@ class ApplicationContext {
      *  @param name - asset name
      *  @return Bytes
      */
-    public function getAsset (name : String) : Bytes {
+    public inline function getAsset (name : String) : Bytes {
         return owner.getAsset (name);
     }
 
@@ -108,7 +109,7 @@ class ApplicationContext {
      *  Add styles to app
      *  @param text - stylesheet
      */
-    public function addStyle (text : String) : Void {
+    public inline function addStyle (text : String) : Void {
         owner.addStyle (text);
     }
 
@@ -117,7 +118,7 @@ class ApplicationContext {
      *  Return android activity
      *  @return Activity
      */
-    public function getAndroidActivity () : Activity {
+    public inline function getAndroidActivity () : Activity {
         return cast (owner, Activity);
     }
     #end

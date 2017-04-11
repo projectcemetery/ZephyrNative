@@ -76,6 +76,31 @@ class Tag extends TagContainer {
         if (childs == null) return [];
         return [for (i in childs) i.render (context)];
      }
+     
+     #if android
+     /**
+      *  Render for android
+      */
+     function renderAndroid (context : ApplicationContext) : NativeView {
+         throw "Unsupported platform";
+     }
+     #end
+     #if web
+     /**
+      *  Render for web
+      */
+     function renderWeb (context : ApplicationContext) : NativeView {
+         throw "Unsupported platform";
+     }
+     #end
+     #if ios
+     /**
+      *  Render for ios
+      */
+     function renderIos (context : ApplicationContext) : NativeView {
+         throw "Unsupported platform";
+     }
+     #end
 
      /**
       *  Constructor
@@ -106,29 +131,20 @@ class Tag extends TagContainer {
      *  @return View
      */
     public function render (context : ApplicationContext) : NativeView {
-        throw "Not implemented";
-    }
+        #if android
+        var view = renderAndroid (context);
+        #elseif web
+        var view = renderWeb (context);
+        #elseif ios
+        var view = renderIos (context);
+        #else
+        throw "Usupported platform";
+        #end
 
-    /**
-     *  Find all tags by css style names
-     *  @param styleNames - 
-     */
-    override public function findByCss (styleNames : Array<String>) : Array<Tag> {
-        var res = new Array<Tag> ();
-
-        var found = false;
-        for (s in styleNames) {
-            if (styles.indexOf (s) < 0) break;
-            found = true;
-        }
-        
-        if (found) res.push (this);        
-
-        for (t in childs) {
-            var styles = t.findByCss (styleNames);
-            if (styles != null) res = res.concat (styles);
-        }
-
-        return if (res.length > 0) res else null;
+        // TODO: style native
+        // Apply styles to native view
+        //var engine = context.getStyleEngine ();
+        //engine.applyNative (view);
+        return view;
     }
 }

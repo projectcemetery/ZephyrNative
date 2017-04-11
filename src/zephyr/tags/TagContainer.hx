@@ -60,18 +60,4 @@ class TagContainer {
 
         return null;
     }
-
-    /**
-     *  Find all tags by css style names
-     *  @param styleNames - 
-     */
-    public function findByCss (styleNames : Array<String>) : Array<Tag> {        
-        var res = new Array<Tag> ();
-        for (t in childs) {
-            var styles = t.findByCss (styleNames);
-            if (styles != null) res = res.concat (styles);
-        }
-
-        return if (res.length > 0) res else null;
-    }
 }
