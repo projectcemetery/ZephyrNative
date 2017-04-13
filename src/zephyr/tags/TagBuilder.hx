@@ -2,6 +2,7 @@ package zephyr.tags;
 
 import zephyr.tags.box.*;
 import zephyr.tags.textview.*;
+import zephyr.tags.toolbar.*;
 import zephyr.tags.TagOptions;
 
 /**
@@ -32,11 +33,11 @@ class TagBuilder {
      *  @param childs - 
      *  @return Toolbar
      */
-/*    public static function toolbar () : Toolbar {
-        return new Toolbar ();
+    public static function toolbar (?options : ToolbarOptions) : Toolbar {
+        return new Toolbar (options);
     }
 
-    public static function listview<T> (?options : ListViewOptions<T>) : Listview<T> {
+  /*  public static function listview<T> (?options : ListViewOptions<T>) : Listview<T> {
         return new Listview (options);
     }
 

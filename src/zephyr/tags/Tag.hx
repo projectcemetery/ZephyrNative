@@ -33,7 +33,7 @@ class Tag extends TagContainer {
     /**
      *  Tag name
      */
-    public var name (default, null) : String; 
+     public var name (default, null) : String; 
 
      /**
       *  Id of tag
