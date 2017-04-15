@@ -72,7 +72,7 @@ class TextView extends Tag {
       *  Constructor 
       */
      public function new (options : TextViewOptions) {
-         super ("textview");
+         super ("textview", options);
          this.options = options;
      }     
 }

@@ -39,6 +39,15 @@ class Toolbar extends Tag {
      */
     var options : ToolbarOptions;
 
+    #if android
+    /**
+     *  Render for android
+     */
+    override function renderAndroid (context : ApplicationContext) : NativeView {
+        throw "Unsupported platform";
+    }
+    #end
+
     #if web
     /**
      *  Render for web
@@ -48,20 +57,23 @@ class Toolbar extends Tag {
     override function renderWeb (context : ApplicationContext) : NativeView {
         var toolbar = Browser.document.createElement (tagName);        
 
-        if (options.center != null) {
-            toolbar.appendChild (options.center.render (context));
+        if (options.title != null) {
+            var titleView = options.title.render (context);            
+            titleView.classList.add ("title");              
+            for (s in options.title.styles) titleView.classList.add (s);
+            toolbar.appendChild (titleView);
         }
 
         return toolbar;
     }
-    #end
+    #end    
 
     /**
      *  Constructor
      *  @param options - 
      */
     public function new (options : ToolbarOptions) {
-        super (tagName);
+        super (tagName, options);
         this.options = options;
     } 
 }

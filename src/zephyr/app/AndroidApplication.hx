@@ -22,13 +22,20 @@
 package zephyr.app;
 
 #if android
+import haxe.io.Bytes;
 import android.app.Activity;
 import android.os.Bundle;
 import android.view.Window;
 import zephyr.app.NativeView;
+import zephyr.style.Engine;
 
 @:keep
 class AndroidApplication extends android.app.Activity implements INativeApplication {
+
+    /**
+     *  Engine for styling
+     */
+    var styleEngine : Engine;
 
     /**
      *  On activity create
@@ -37,6 +44,9 @@ class AndroidApplication extends android.app.Activity implements INativeApplicat
     @:overload
     override function onCreate (bundle : Bundle) : Void {
         super.onCreate (bundle);
+
+        styleEngine = new Engine ();
+
         this.requestWindowFeature (Window.FEATURE_NO_TITLE);
         var entryPoint = EntryPointHelper.getEntryPoint();
         var cls = Type.resolveClass (entryPoint);
@@ -52,7 +62,16 @@ class AndroidApplication extends android.app.Activity implements INativeApplicat
      *  @return Bytes
      */
     public function getAsset (name : String) : Bytes {
-        return null;
+        try {
+            var input = getAssets ().open (name);
+            var size = input.available ();
+            var buffer = new java.NativeArray<java.types.Int8> (size);
+            input.read (buffer);
+            input.close ();
+            return Bytes.ofData (buffer);
+        } catch (e : Dynamic) {
+            return null;
+        }             
     }
 
     /**
@@ -60,7 +79,7 @@ class AndroidApplication extends android.app.Activity implements INativeApplicat
      *  @param text - stylesheet
      */
     public function addStyle (text : String) : Void {
-        
+        styleEngine.addRules (text);
     }
 
     /**

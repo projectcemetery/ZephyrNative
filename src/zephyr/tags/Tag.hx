@@ -85,6 +85,7 @@ class Tag extends TagContainer {
          throw "Unsupported platform";
      }
      #end
+     
      #if web
      /**
       *  Render for web
@@ -118,8 +119,8 @@ class Tag extends TagContainer {
                  tag.parent = this;
              }
          }
-
-         if (options != null) {
+         
+         if (options != null) {             
              if (options.id != null) id = options.id;
              if (options.css != null) parseCssOption (options.css);
          }         
@@ -141,10 +142,6 @@ class Tag extends TagContainer {
         throw "Usupported platform";
         #end
 
-        // TODO: style native
-        // Apply styles to native view
-        //var engine = context.getStyleEngine ();
-        //engine.applyNative (view);
         return view;
     }
 }

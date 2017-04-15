@@ -48,17 +48,11 @@ class ApplicationContext {
     var currentController : Controller;
 
     /**
-     *  Engine for styling
-     */
-    var styleEngine : Engine;
-
-    /**
      *  Constructor
      */
     public function new (owner : INativeApplication) {
         this.owner = owner;
         controllers = new Map<String, Controller> ();
-        styleEngine = new Engine ();
         // Apply default style
         var asset = getAsset ("default.css");
         addStyle (asset.toString ());
