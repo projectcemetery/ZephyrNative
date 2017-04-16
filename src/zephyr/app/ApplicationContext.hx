@@ -30,6 +30,10 @@ import zephyr.controller.Controller;
 import zephyr.tags.Tag;
 import zephyr.style.Engine;
 
+/**
+ *  Context for native application
+ *  Hides some native methods
+ */
 class ApplicationContext {    
 
     /**
@@ -107,6 +111,14 @@ class ApplicationContext {
         owner.addStyle (text);
     }
 
+    /**
+     *  Return engine for styling native views
+     *  @return AndroidEngine
+     */
+    public function getEngine () : Engine {
+        return owner.getEngine ();
+    }
+
     #if android
     /**
      *  Return android activity
@@ -114,6 +126,6 @@ class ApplicationContext {
      */
     public inline function getAndroidActivity () : Activity {
         return cast (owner, Activity);
-    }
+    }    
     #end
 }

@@ -1,9 +1,32 @@
+body {
+    padding: 0px;
+    margin: 0px;
+}
+
 vbox {
+    display: flex;
     justify-content: flex-start;
     flex-direction: column;
+    flex-wrap: nowrap;    
 }
 
 hbox {
+    display: flex;
     justify-content: flex-start;
     flex-direction: row;
+    flex-wrap: nowrap;
+}
+
+toolbar {
+    display: flex;
+    justify-content: flex-start;    
+    flex-direction: row;
+    flex-wrap: nowrap;
+    align-items: center;
+    height: 3rem;
+    background: #33AA11;
+}
+
+toolbar .title {
+    color: #fff;
 }

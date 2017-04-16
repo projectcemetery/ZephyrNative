@@ -19,38 +19,18 @@
  * THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
-package zephyr.app;
+package zephyr.tags.button;
 
-import haxe.io.Bytes;
-import zephyr.style.Engine;
+import zephyr.tags.TagOptions;
 
 /**
- *  Interface to native application. Like: Activity
+ *  Options for TextView constructor
  */
-interface INativeApplication {
+typedef ButtonOptions = {
+    > TagOptions,
 
     /**
-     *  Apply view
-     *  @param view - 
+     *  Button text
      */
-    public function setView (view : NativeView) : Void;
-
-    /**
-     *  Get asset by name
-     *  @param name - asset name
-     *  @return Bytes
-     */
-    public function getAsset (name : String) : Bytes;    
-
-    /**
-     *  Add styles to app
-     *  @param text - stylesheet
-     */
-    public function addStyle (text : String) : Void;
-    
-    /**
-     *  Return engine for styling native views
-     *  @return AndroidEngine
-     */
-    public function getEngine () : Engine;
+    @:optional var text : String;
 }

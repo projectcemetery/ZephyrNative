@@ -26,12 +26,18 @@ import haxe.io.Bytes;
 import js.Browser;
 import zephyr.app.NativeView;
 import zephyr.app.EntryPointHelper;
+import zephyr.style.Engine;
 
 /**
  *  Application for webview: browser, cordova, etc
  */
 @:keep
 class WebApplication implements INativeApplication {
+
+    /**
+     *  Engine for styling
+     */
+    var styleEngine : Engine;
 
     /**
      *  Entry point
@@ -51,7 +57,9 @@ class WebApplication implements INativeApplication {
     /**
      *  Constructor
      */
-    public function new () {}
+    public function new () {
+        styleEngine = new Engine ();
+    }
 
     /**
      *  Get asset by name
@@ -82,6 +90,14 @@ class WebApplication implements INativeApplication {
      */
     public function setView (view : NativeView) : Void {        
         Browser.document.body.appendChild (view);
-    }    
+    }
+
+    /**
+     *  Return engine for styling native views
+     *  @return AndroidEngine
+     */
+    public function getEngine () : Engine {
+        return styleEngine;
+    }
 }
 #end

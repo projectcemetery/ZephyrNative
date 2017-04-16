@@ -19,38 +19,60 @@
  * THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
-package zephyr.app;
+package zephyr.tags.button;
 
-import haxe.io.Bytes;
-import zephyr.style.Engine;
+#if android
+import android.widget.Button;
+#end
+
+#if web
+import js.Browser;
+#end
+
+import zephyr.app.ApplicationContext;
+import zephyr.app.NativeView;
 
 /**
- *  Interface to native application. Like: Activity
+ *  Tag for Button 
  */
-interface INativeApplication {
+class Button extends Tag {
 
     /**
-     *  Apply view
-     *  @param view - 
+     *  Options for button rendering
      */
-    public function setView (view : NativeView) : Void;
+    var options : ButtonOptions;
+
+    #if android
+    /**
+     *  Render for android
+     */
+    override function renderAndroid (context : ApplicationContext) : NativeView {
+        throw "Not implemented";
+    }
+    #end
+
+    #if web
+    /**
+     *  Render for web
+     *  @param context - 
+     *  @return NativeView
+     */
+    override function renderWeb (context : ApplicationContext) : NativeView {
+        var engine = context.getEngine ();
+        var button = Browser.document.createElement ("button");
+        engine.styleView (button, this);
+        if (options.text != null) {
+            //button.innerText = options.text;
+        }        
+        return button;
+    }
+    #end
 
     /**
-     *  Get asset by name
-     *  @param name - asset name
-     *  @return Bytes
-     */
-    public function getAsset (name : String) : Bytes;    
-
-    /**
-     *  Add styles to app
-     *  @param text - stylesheet
-     */
-    public function addStyle (text : String) : Void;
-    
-    /**
-     *  Return engine for styling native views
-     *  @return AndroidEngine
-     */
-    public function getEngine () : Engine;
+      *  Constructor
+      */
+     public function new (options : ButtonOptions) {
+         super ("button", options);
+         this.options = options;
+     } 
 }

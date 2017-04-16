@@ -57,6 +57,14 @@ class AndroidApplication extends android.app.Activity implements INativeApplicat
     }
 
     /**
+     *  Return engine for styling native views
+     *  @return AndroidEngine
+     */
+    public function getEngine () : Engine {
+        return styleEngine;
+    }
+
+    /**
      *  Get asset by name
      *  @param name - asset name
      *  @return Bytes

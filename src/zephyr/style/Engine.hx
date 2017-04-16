@@ -23,6 +23,7 @@ package zephyr.style;
 
 import zephyr.tags.Tag;
 import zephyr.style.Defs;
+import zephyr.app.NativeView;
 
 class Rule {
 	public var id : Int;
@@ -149,6 +150,29 @@ class Engine {
 		}
 	}
 
+	#if android
+	/**
+	 *  Style native view android with tag styles
+	 *  @param view - 
+	 *  @param tag - 
+	 */
+	public function styleView (view : NativeView, tag : Tag) {
+
+	}
+	#end
+
+	#if web
+	/**
+	 *  Style native web view with tag styles
+	 *  @param view - 
+	 *  @param tag - 
+	 */
+	public function styleView (view : NativeView, tag : Tag) {
+		for (s in tag.styles) {
+			if (!view.classList.contains (s)) view.classList.add (s);
+		}
+	}
+	#end
 }
 
 /*

@@ -22,9 +22,7 @@
 package zephyr.tags.textview;
 
 #if android
-import android.widget.LinearLayout;
-import android.widget.LinearLayout.LinearLayout_LayoutParams;
-import android.content.Context;
+import android.widget.TextView;
 #end
 
 #if web
@@ -49,7 +47,9 @@ class TextView extends Tag {
      *  Render for android
      */
     override function renderAndroid (context : ApplicationContext) : NativeView {
+        var engine = context.getEngine ();
         var textView = new android.widget.TextView (context.getAndroidActivity ());
+        engine.styleView (textView, this);
         textView.setText (options.text);
         return textView;
     }
@@ -62,7 +62,9 @@ class TextView extends Tag {
      *  @return NativeView
      */
     override function renderWeb (context : ApplicationContext) : NativeView {
+        var engine = context.getEngine ();
         var textview = Browser.document.createElement ("textview");
+        engine.styleView (textview, this);
         textview.innerText = options.text;
         return textview;
     }

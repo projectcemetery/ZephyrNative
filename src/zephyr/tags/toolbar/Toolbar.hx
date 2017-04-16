@@ -21,6 +21,10 @@
 
 package zephyr.tags.toolbar;
 
+#if android
+import android.widget.LinearLayout;
+#end
+
 #if web
 import js.Browser;
 #end
@@ -44,7 +48,16 @@ class Toolbar extends Tag {
      *  Render for android
      */
     override function renderAndroid (context : ApplicationContext) : NativeView {
-        throw "Unsupported platform";
+        var engine = context.getEngine ();
+        var layout = new LinearLayout (context.getAndroidActivity ());
+        engine.styleView (layout, this);        
+
+        if (options.title != null) {
+            var titleView = options.title.render (context);
+            layout.addView (titleView);
+        }
+
+        return layout;        
     }
     #end
 
@@ -55,12 +68,17 @@ class Toolbar extends Tag {
      *  @return NativeView
      */
     override function renderWeb (context : ApplicationContext) : NativeView {
-        var toolbar = Browser.document.createElement (tagName);        
+        var engine = context.getEngine ();
+        var toolbar = Browser.document.createElement (tagName);
+        engine.styleView (toolbar, this);
+
+        if (options.left != null) {
+            var leftView = options.left.render (context);
+            toolbar.appendChild (leftView);
+        }
 
         if (options.title != null) {
             var titleView = options.title.render (context);            
-            titleView.classList.add ("title");              
-            for (s in options.title.styles) titleView.classList.add (s);
             toolbar.appendChild (titleView);
         }
 
@@ -75,5 +93,10 @@ class Toolbar extends Tag {
     public function new (options : ToolbarOptions) {
         super (tagName, options);
         this.options = options;
+
+        if (options.title != null) {
+            // Append style
+            options.title.styles.push ("title");
+        }
     } 
 }
