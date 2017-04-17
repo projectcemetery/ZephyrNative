@@ -31,6 +31,7 @@ import js.Browser;
 
 import zephyr.app.ApplicationContext;
 import zephyr.app.NativeView;
+import zephyr.tags.TagBuilder.*;
 
 /**
  *  Tag for Toolbar
@@ -73,8 +74,8 @@ class Toolbar extends Tag {
         engine.styleView (toolbar, this);
 
         if (options.left != null) {
-            var leftView = options.left.render (context);
-            toolbar.appendChild (leftView);
+            var container = hbox ({ css: "left" }, [ options.left ]);            
+            toolbar.appendChild (container.render (context));
         }
 
         if (options.title != null) {

@@ -59,7 +59,7 @@ class Button extends Tag {
      */
     override function renderWeb (context : ApplicationContext) : NativeView {
         var engine = context.getEngine ();
-        var button = Browser.document.createElement ("button");
+        var button = Browser.document.createElement ("zbutton");
         engine.styleView (button, this);
         if (options.text != null) {
             //button.innerText = options.text;

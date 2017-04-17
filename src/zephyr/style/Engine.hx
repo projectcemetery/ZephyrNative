@@ -171,6 +171,10 @@ class Engine {
 		for (s in tag.styles) {
 			if (!view.classList.contains (s)) view.classList.add (s);
 		}
+
+		if (tag.id != null) {
+			view.id = tag.id;
+		}
 	}
 	#end
 }

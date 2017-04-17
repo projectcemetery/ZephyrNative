@@ -68,7 +68,9 @@ class Box extends Tag {
      *  @return NativeView
      */
     override function renderWeb (context : ApplicationContext) : NativeView {
+        var engine = context.getEngine ();
         var box = Browser.document.createElement (name);
+        engine.styleView (box, this);
 
         // Render childs
         var childs = renderChilds (context);
