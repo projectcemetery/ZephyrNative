@@ -45,17 +45,20 @@ class Box extends Tag {
      * Render for android
     **/
     override function renderAndroid (context : ApplicationContext) : NativeView {
+        var engine = context.getEngine ();        
         var layout =  new LinearLayout (context.getAndroidActivity ());
-        layout.setOrientation(LinearLayout.VERTICAL);        
+        engine.styleView (layout, this);
+
+        /*layout.setOrientation(LinearLayout.VERTICAL);        
         layout.setWeightSum (1);
         var params = new LinearLayout_LayoutParams (-1,-1);
+        layout.setLayoutParams (params);
+        */
 
         var childs = renderChilds (context);
         for (child in childs) {
             layout.addView (child);
-        }
-
-        layout.setLayoutParams (params);
+        }        
 
         return layout;
     }

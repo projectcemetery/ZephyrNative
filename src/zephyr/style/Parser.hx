@@ -82,284 +82,172 @@ class Parser {
         throw "Not implemented";
 	}
 
+	/**
+	 *  Apply style
+	 *  @param r - rule
+	 *  @param v - value
+	 *  @param s - style
+	 *  @return success
+	 */
 	function applyStyle( r : String, v : Value, s : Style ) : Bool {
-		switch( r ) {
-		case "padding":
-			switch( v ) {
-			case VGroup([a, b]):
-				var a = getVal(a), b = getVal(b);
-				if( a != null && b != null ) {
-					s.paddingTop = s.paddingBottom = a;
-					s.paddingLeft = s.paddingRight = b;
-					return true;
+		switch (r) {
+			case "justify-content":
+				switch (getIdent(v)) {
+					case "flex-start":
+						s.justifyContent = FlexStart;
+						return true;
+					case "flex-end":
+						s.justifyContent = FlexEnd;
+						return true;					
+					default:
 				}
-			default:
-				var i = getVal(v);
-				if( i != null ) { s.padding(i); return true; }
-			}
-		case "padding-top":
-			var i = getVal(v);
-			if( i != null ) { s.paddingTop = i; return true; }
-		case "padding-left":
-			var i = getVal(v);
-			if( i != null ) { s.paddingLeft = i; return true; }
-		case "padding-right":
-			var i = getVal(v);
-			if( i != null ) { s.paddingRight = i; return true; }
-		case "padding-bottom":
-			var i = getVal(v);
-			if( i != null ) { s.paddingBottom = i; return true; }
-		case "margin":
-			switch( v ) {
-			case VGroup([a, b]):
-				var a = getVal(a), b = getVal(b);
-				if( a != null && b != null ) {
-					s.marginTop = s.marginBottom = a;
-					s.marginLeft = s.marginRight = b;
-					return true;
+			case "flex-direction":
+				switch (getIdent(v)) {
+					case "row":
+						s.flexDirection = Row;
+						return true;
+					case "column":
+						s.flexDirection = Column;
+						return true;
+					default:
 				}
-			default:
-				var i = getVal(v);
-				if( i != null ) { s.margin(i); return true; }
-			}
-		case "margin-top":
-			var i = getVal(v);
-			if( i != null ) { s.marginTop = i; return true; }
-		case "margin-left":
-			var i = getVal(v);
-			if( i != null ) { s.marginLeft = i; return true; }
-		case "margin-right":
-			var i = getVal(v);
-			if( i != null ) { s.marginRight = i; return true; }
-		case "margin-bottom":
-			var i = getVal(v);
-			if( i != null ) { s.marginBottom = i; return true; }
-		case "width":
-			var i = getVal(v);
-			if( i != null ) {
-				s.width = i;
-				return true;
-			}
-			if( getIdent(v) == "auto" ) {
-				s.width = null;
-				s.autoWidth = true;
-				return true;
-			}
-		case "height":
-			var i = getVal(v);
-			if( i != null ) {
-				s.height = i;
-				return true;
-			}
-			if( getIdent(v) == "auto" ) {
-				s.height = null;
-				s.autoHeight = true;
-				return true;
-			}
-		case "background-color":
-			var f = getFill(v);
-			if( f != null ) {
-				s.backgroundColor = f;
-				return true;
-			}
-		case "background":
-			return applyComposite(["background-color"], v, s);
-		case "font-family":
-			var l = getFontName(v);
-			if( l != null ) {
-				s.fontName = l;
-				return true;
-			}
-		case "font-size":
-			var i = getUnit(v);
-			if( i != null ) {
-				switch( i ) {
-				case Pix(v):
-					s.fontSize = v;
+			case "padding":
+				switch (v) {
+				case VGroup([a, b]):
+					var a = getVal(a), b = getVal(b);
+					if( a != null && b != null ) {
+						s.paddingTop = s.paddingBottom = a;
+						s.paddingLeft = s.paddingRight = b;
+						return true;
+					}
 				default:
-					notImplemented();
+					var i = getVal(v);
+					if( i != null ) { s.padding(i); return true; }
 				}
-				return true;
-			}
-		case "color":
-			var c = getCol(v);
-			if( c != null ) {
-				s.color = c;
-				return true;
-			}
-		case "border-radius":
-			var i = getVal(v);
-			if( i != null ) {
-				s.borderRadius = i;
-				return true;
-			}
-		case "border":
-			if( applyComposite(["border-width", "border-style", "border-color"], v, s) )
-				return true;
-			if( getIdent(v) == "none" ) {
-				s.borderSize = 0;
-				s.borderColor = Transparent;
-				return true;
-			}
-		case "border-width":
-			var i = getVal(v);
-			if( i != null ) {
-				s.borderSize = i;
-				return true;
-			}
-		case "border-style":
-			if( getIdent(v) == "solid" )
-				return true;
-		case "border-color":
-			var c = getFill(v);
-			if( c != null ) {
-				s.borderColor = c;
-				return true;
-			}
-		case "offset":
-			return applyComposite(["offset-x", "offset-y"], v, s);
-		case "offset-x":
-			var i = getVal(v);
-			if( i != null ) {
-				s.offsetX = i;
-				return true;
-			}
-		case "offset-y":
-			var i = getVal(v);
-			if( i != null ) {
-				s.offsetY = i;
-				return true;
-			}
-		case "layout":
-			var i = mapIdent(v, [Horizontal, Vertical, Absolute, Dock, Inline]);
-			if( i != null ) {
-				s.layout = i;
-				return true;
-			}
-		case "spacing":
-			return applyComposite(["vertical-spacing", "horizontal-spacing"], v, s);
-		case "horizontal-spacing":
-			var i = getVal(v);
-			if( i != null ) {
-				s.horizontalSpacing = i;
-				return true;
-			}
-		case "vertical-spacing":
-			var i = getVal(v);
-			if( i != null ) {
-				s.verticalSpacing = i;
-				return true;
-			}
-		case "increment":
-			var i = getVal(v);
-			if( i != null ) {
-				s.increment = i;
-				return true;
-			}
-		case "max-increment":
-			var i = getVal(v);
-			if( i != null ) {
-				s.maxIncrement = i;
-				return true;
-			}
-		case "tick-color":
-			var i = getFill(v);
-			if( i != null ) {
-				s.tickColor = i;
-				return true;
-			}
-		case "tick-spacing":
-			var i = getVal(v);
-			if( i != null ) {
-				s.tickSpacing = i;
-				return true;
-			}
-		case "dock":
-			var i = mapIdent(v, [Top, Bottom, Left, Right, Full]);
-			if( i != null ) {
-				s.dock = i;
-				return true;
-			}
-		case "cursor-color":
-			var i = getColAlpha(v);
-			if( i != null ) {
-				s.cursorColor = i;
-				return true;
-			}
-		case "selection-color":
-			var i = getColAlpha(v);
-			if( i != null ) {
-				s.selectionColor = i;
-				return true;
-			}
-		case "overflow":
-			switch( getIdent(v) ) {
-			case "hidden":
-				s.overflowHidden = true;
-				return true;
-			case "visible":
-				s.overflowHidden = false;
-				return true;
-			}
-		/*case "icon":
-			var i = getImage(v);
-			if( i != null ) {
-				s.icon = i;
-				return true;
-			}*/
-		case "icon-color":
-			var c = getColAlpha(v);
-			if( c != null ) {
-				s.iconColor = c;
-				return true;
-			}
-		case "icon-left":
-			var i = getVal(v);
-			if( i != null ) {
-				s.iconLeft = i;
-				return true;
-			}
-		case "icon-top":
-			var i = getVal(v);
-			if( i != null ) {
-				s.iconTop = i;
-				return true;
-			}
-		case "position":
-			switch( getIdent(v) ) {
-			case "absolute":
-				s.positionAbsolute = true;
-				return true;
-			case "relative":
-				s.positionAbsolute = false;
-				return true;
+			case "padding-top":
+				var i = getVal(v);
+				if( i != null ) { s.paddingTop = i; return true; }
+			case "padding-left":
+				var i = getVal(v);
+				if( i != null ) { s.paddingLeft = i; return true; }
+			case "padding-right":
+				var i = getVal(v);
+				if( i != null ) { s.paddingRight = i; return true; }
+			case "padding-bottom":
+				var i = getVal(v);
+				if( i != null ) { s.paddingBottom = i; return true; }
+			case "margin":
+				switch (v) {
+				case VGroup([a, b]):
+					var a = getVal(a), b = getVal(b);
+					if( a != null && b != null ) {
+						s.marginTop = s.marginBottom = a;
+						s.marginLeft = s.marginRight = b;
+						return true;
+					}
+				default:
+					var i = getVal(v);
+					if( i != null ) { s.margin(i); return true; }
+				}
+			case "margin-top":
+				var i = getVal(v);
+				if( i != null ) { s.marginTop = i; return true; }
+			case "margin-left":
+				var i = getVal(v);
+				if( i != null ) { s.marginLeft = i; return true; }
+			case "margin-right":
+				var i = getVal(v);
+				if( i != null ) { s.marginRight = i; return true; }
+			case "margin-bottom":
+				var i = getVal(v);
+				if( i != null ) { s.marginBottom = i; return true; }
+			case "width":
+				var i = getVal(v);
+				if( i != null ) {
+					s.width = i;
+					return true;
+				}			
+			case "height":
+				var i = getVal(v);
+				if( i != null ) {
+					s.height = i;
+					return true;
+				}			
+			case "background-color":
+				var f = getFill(v);
+				if( f != null ) {
+					s.backgroundColor = f;
+					return true;
+				}
+			case "background":
+				return applyComposite(["background-color"], v, s);
+			case "font-family":
+				var l = getFontName(v);
+				if( l != null ) {
+					s.fontName = l;
+					return true;
+				}
+			case "font-size":
+				var i = getUnit(v);
+				if( i != null ) {
+					switch( i ) {
+					case Pix(v):
+						s.fontSize = v;
+					default:
+						notImplemented();
+					}
+					return true;
+				}
+			case "color":
+				var c = getCol(v);
+				if( c != null ) {
+					s.color = c;
+					return true;
+				}
+			case "border-radius":
+				var i = getVal(v);
+				if( i != null ) {
+					s.borderRadius = i;
+					return true;
+				}
+			case "border":
+				if( applyComposite(["border-width", "border-style", "border-color"], v, s) )
+					return true;
+				if( getIdent(v) == "none" ) {
+					s.borderSize = 0;
+					s.borderColor = Transparent;
+					return true;
+				}
+			case "border-width":
+				var i = getVal(v);
+				if( i != null ) {
+					s.borderSize = i;
+					return true;
+				}
+			case "border-style":
+				if( getIdent(v) == "solid" )
+					return true;
+			case "border-color":
+				var c = getFill(v);
+				if( c != null ) {
+					s.borderColor = c;
+					return true;
+				}			
+			case "text-align":
+				switch( getIdent(v) ) {
+				case "left":
+					s.textAlign = Left;
+					return true;
+				case "right":
+					s.textAlign = Right;
+					return true;
+				case "center":
+					s.textAlign = Center;
+					return true;
+				default:
+				}
 			default:
-			}
-		case "text-align":
-			switch( getIdent(v) ) {
-			case "left":
-				s.textAlign = Left;
-				return true;
-			case "right":
-				s.textAlign = Right;
-				return true;
-			case "center":
-				s.textAlign = Center;
-				return true;
-			default:
-			}
-		case "display":
-			switch( getIdent(v) ) {
-			case "none":
-				s.display = false;
-				return true;
-			case "block", "inline-block":
-				s.display = true;
-				return true;
-			default:
-			}
-		default:
-			throw "Not implemented '"+r+"' = "+valueStr(v);
+				throw "Not implemented '"+r+"' = "+valueStr(v);
 		}
 		return false;
 	}
@@ -730,7 +618,7 @@ class Parser {
 		if( c.parent != null ) updateClass(c.parent);
 	}
 
-	function readClass( parent ) : CssClass {
+	function readClass (parent : CssClass) : CssClass {
 		var c = new CssClass();
 		c.parent = parent;
 		var def = false;
@@ -944,17 +832,7 @@ class Parser {
 		return StringTools.trim(css.substr(start, pos - start - 1));
 	}
 
-	#if false
-	function readToken( ?pos : haxe.PosInfos ) {
-		var t = _readToken();
-		haxe.Log.trace(t, pos);
-		return t;
-	}
-
-	function _readToken() {
-	#else
-	function readToken() {
-	#end
+	function readToken() {	
 		var t = tokens.pop();
 		if( t != null )
 			return t;
@@ -1046,5 +924,4 @@ class Parser {
 		}
 		return null;
 	}
-
 }

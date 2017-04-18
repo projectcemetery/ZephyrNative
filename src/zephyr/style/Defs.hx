@@ -21,10 +21,24 @@
 
 package zephyr.style;
 
+/**
+ *  Unit for geometry
+ */
 enum Unit {
+	/**
+	 *  Pixels
+	 */
 	Pix( v : Float );
+
+	/**
+	 *  Percents
+	 */
 	Percent( v : Float );
-	EM( v : Float );
+
+	/**
+	 *  
+	 */
+	Em( v : Float );
 }
 
 enum FillStyle {
@@ -33,26 +47,27 @@ enum FillStyle {
 	Gradient( a : Int, b : Int, c : Int, d : Int );
 }
 
-enum Layout {
-	Horizontal;
-	Vertical;
-	Absolute;
-	Dock;
-	Inline;
-}
-
-enum DockStyle {
-	Top;
-	Left;
-	Right;
-	Bottom;
-	Full;
-}
 
 enum TextAlign {
 	Left;
 	Right;
 	Center;
+}
+
+/**
+ *  Direction of flex component
+ */
+enum FlexDirection {
+	Row;
+	Column;
+}
+
+/**
+ *  Content justify
+ */
+enum JustifyContent {
+	FlexStart;
+	FlexEnd;
 }
 
 class CssClass {
@@ -61,6 +76,10 @@ class CssClass {
 	public var className : Null<String>;
 	public var pseudoClass : Null<String>;
 	public var id : Null<String>;
+
+	/**
+	 *  Constructor
+	 */
 	public function new() {
 	}
 }
