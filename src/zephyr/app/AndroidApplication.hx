@@ -51,8 +51,17 @@ class AndroidApplication extends android.app.Activity implements INativeApplicat
         var entryPoint = EntryPointHelper.getEntryPoint();
         var cls = Type.resolveClass (entryPoint);
         if (cls != null) {
-            var inst : IApplication = cast Type.createEmptyInstance (cls);
-            inst.onReady (new ApplicationContext (this));
+            try {
+                var inst : IApplication = cast Type.createEmptyInstance (cls);            
+                inst.onReady (new ApplicationContext (this));
+            } catch (e : java.lang.Exception) {
+                var textView = new android.widget.TextView (this);
+                var sw = new java.io.StringWriter();
+                var pw = new java.io.PrintWriter(sw);
+                e.printStackTrace(pw);
+                textView.setText (sw.toString());
+                setContentView (textView);
+            }
         }
     }
 
@@ -69,17 +78,13 @@ class AndroidApplication extends android.app.Activity implements INativeApplicat
      *  @param name - asset name
      *  @return Bytes
      */
-    public function getAsset (name : String) : Bytes {
-        try {
-            var input = getAssets ().open (name);
-            var size = input.available ();
-            var buffer = new java.NativeArray<java.types.Int8> (size);
-            input.read (buffer);
-            input.close ();
-            return Bytes.ofData (buffer);
-        } catch (e : Dynamic) {
-            return null;
-        }             
+    public function getAsset (name : String) : Bytes {        
+        var input = getAssets ().open (name);
+        var size = input.available ();
+        var buffer = new java.NativeArray<java.types.Int8> (size);
+        input.read (buffer);
+        input.close ();
+        return Bytes.ofData (buffer);
     }
 
     /**
