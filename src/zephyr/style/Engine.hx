@@ -63,10 +63,9 @@ class Engine {
 			rules.push(rule);
 		}
 		rules.sort(sortByPriority);
-		for(rule in rules )
+		for (rule in rules) {			
 			style.apply(rule.s);
-		if(tag.customStyle != null )
-			style.apply(tag.customStyle);
+		}
 	}
 
 	/**
@@ -157,7 +156,38 @@ class Engine {
 	 *  @param tag - 
 	 */
 	public function styleView (view : NativeView, tag : Tag) {
-		
+		applyClasses (tag);
+		trace (tag.name);
+		trace (tag.style);
+
+		var style = tag.style;
+		var layout : android.widget.LinearLayout = null;
+		if (Std.is (view, android.widget.LinearLayout)) {
+			layout = cast (view, android.widget.LinearLayout);
+		}
+
+		if (layout != null) {
+			if (style.flexDirection != null) {
+				switch (style.flexDirection) {
+					case FlexDirection.Row: layout.setOrientation (0);
+					case FlexDirection.Column: layout.setOrientation (1);					
+					default: {}
+				}
+			}
+		}
+
+		if (style.height != null) {
+			var lay = new android.widget.LinearLayout.LinearLayout_LayoutParams (-1, 50);
+			trace (Math.round (style.height));
+			view.setLayoutParams (lay);
+		}
+
+		if (style.backgroundColor != null) {
+			switch (style.backgroundColor) {
+				case FillStyle.Color (color): view.setBackgroundColor (color);
+				default: {}
+			}			
+		}		
 	}
 	#end
 

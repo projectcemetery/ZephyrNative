@@ -56,12 +56,6 @@ class Tag extends TagContainer {
      public var parent : Tag;
 
      /**
-      *  Custom style. 
-      *  TODO: implement from options
-      */
-     public var customStyle : Style;
-
-     /**
       *  Parse css classes string. Like: mystyle another_style good_style
       *  @param cls - 
       */

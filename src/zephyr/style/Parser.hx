@@ -89,7 +89,7 @@ class Parser {
 	 *  @param s - style
 	 *  @return success
 	 */
-	function applyStyle( r : String, v : Value, s : Style ) : Bool {
+	function applyStyle (r : String, v : Value, s : Style) : Bool {
 		switch (r) {
 			case "justify-content":
 				switch (getIdent(v)) {
@@ -167,8 +167,8 @@ class Parser {
 					s.width = i;
 					return true;
 				}			
-			case "height":
-				var i = getVal(v);
+			case "height":				
+				var i = getVal(v);				
 				if( i != null ) {
 					s.height = i;
 					return true;
@@ -246,8 +246,7 @@ class Parser {
 					return true;
 				default:
 				}
-			default:
-				throw "Not implemented '"+r+"' = "+valueStr(v);
+			default: {}				
 		}
 		return false;
 	}
@@ -328,12 +327,21 @@ class Parser {
 		};
 	}
 
-	function getVal( v : Value ) : Null<Float> {
+	/**
+	 *  Get value
+	 *  @param v - 
+	 *  @return Null<Float>
+	 */
+	function getVal (v : Value) : Null<Float> {
+		var d = new android.text.TextPaint ();
+		var bounds = new android.graphics.Rect ();
+		d.getTextBounds ("F", 0, 1, bounds);
 		return switch( v ) {
-		case VUnit(f, u):
-			switch( u ) {
+		case VUnit (f, u):
+			switch (u) {
 			case "px": f;
 			case "pt": f * 4 / 3;
+			case "em" : f * bounds.height ();
 			default: null;
 			}
 		case VInt(v):
@@ -379,14 +387,22 @@ class Parser {
 		};
 	}
 
-	function getColAlpha( v : Value ) {
+	/**
+	 *  Get alpha color
+	 *  @param v - 
+	 */
+	function getColAlpha (v : Value) {
 		var c = getCol(v);
 		if( c != null && c >>> 24 == 0 )
 			c |= 0xFF000000;
 		return c;
 	}
 
-	function getFill( v : Value ) {
+	/**
+	 *  Get fill type
+	 *  @param v - 
+	 */
+	function getFill (v : Value) {
 		var c = getColAlpha(v);
 		if( c != null )
 			return Color(c);
@@ -454,10 +470,14 @@ class Parser {
 		};
 	}
 
-	function getFontName( v : Value ) {
-		return switch( v ) {
-		case VString(s): s;
-		case VGroup(_):
+	/**
+	 *  Get font name from value
+	 *  @param v - 
+	 */
+	function getFontName (v : Value) {
+		return switch (v) {
+		case VString (s): s;
+		case VGroup (_):
 			var g = getGroup(v, getIdent);
 			if( g == null ) null else g.join(" ");
 		case VIdent(i): i;
@@ -547,8 +567,10 @@ class Parser {
 				}
 			default:
 			}
-			if( !applyStyle(r, v, s) )
-				throw "Invalid value " + valueStr(v) + " for css " + r;
+
+			// Ignore wrong style
+			applyStyle(r, v, s);
+			
 			if( isToken(eof) )
 				break;
 			expect(TSemicolon);
@@ -595,8 +617,7 @@ class Parser {
 			isToken(TSpaces); // skip
 			var c = readClass(null);
 			spacesTokens = false;
-			if( c == null ) break;
-			updateClass(c);
+			if( c == null ) break;			
 			classes.push(c);
 			if( !isToken(TComma) )
 				break;
@@ -604,19 +625,7 @@ class Parser {
 		if( classes.length == 0 )
 			unexpected(readToken());
 		return classes;
-	}
-
-	function updateClass( c : CssClass ) {
-		// map html types to comp ones
-		switch( c.node ) {
-		case "div": c.node = "box";
-		case "span": c.node = "label";
-		case "h1", "h2", "h3", "h4":
-			c.pseudoClass = c.node;
-			c.node = "label";
-		}
-		if( c.parent != null ) updateClass(c.parent);
-	}
+	}	
 
 	function readClass (parent : CssClass) : CssClass {
 		var c = new CssClass();

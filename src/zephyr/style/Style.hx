@@ -65,24 +65,26 @@ class Style {
 	 *  @param s - 
 	 */
 	public function apply( s : Style ) {
-		if( s.fontName != null ) fontName = s.fontName;
-		if( s.fontSize != null ) fontSize = s.fontSize;
-		if( s.color != null ) color = s.color;
-		if( s.backgroundColor != null ) backgroundColor = s.backgroundColor;
-		if( s.borderRadius != null ) borderRadius = s.borderRadius;
-		if( s.borderSize != null ) borderSize = s.borderSize;
-		if( s.borderColor != null ) borderColor = s.borderColor;
-		if( s.paddingLeft != null ) paddingLeft = s.paddingLeft;
-		if( s.paddingRight != null ) paddingRight = s.paddingRight;
-		if( s.paddingTop != null ) paddingTop = s.paddingTop;
-		if( s.paddingBottom != null ) paddingBottom = s.paddingBottom;		
-		if( s.width != null ) width = s.width;
-		if( s.height != null ) height = s.height;
-		if( s.marginLeft != null ) marginLeft = s.marginLeft;
-		if( s.marginRight != null ) marginRight = s.marginRight;
-		if( s.marginTop != null ) marginTop = s.marginTop;
-		if( s.marginBottom != null ) marginBottom = s.marginBottom;		
-		if( s.textAlign != null ) textAlign = s.textAlign;
+		if (s.flexDirection != null) flexDirection = s.flexDirection;
+		if (s.justifyContent != null) justifyContent = s.justifyContent;
+		if (s.fontName != null) fontName = s.fontName;
+		if (s.fontSize != null) fontSize = s.fontSize;
+		if (s.color != null) color = s.color;
+		if (s.backgroundColor != null) backgroundColor = s.backgroundColor;
+		if (s.borderRadius != null) borderRadius = s.borderRadius;
+		if (s.borderSize != null) borderSize = s.borderSize;
+		if (s.borderColor != null) borderColor = s.borderColor;
+		if (s.paddingLeft != null) paddingLeft = s.paddingLeft;
+		if (s.paddingRight != null) paddingRight = s.paddingRight;
+		if (s.paddingTop != null) paddingTop = s.paddingTop;
+		if (s.paddingBottom != null) paddingBottom = s.paddingBottom;		
+		if (s.width != null) width = s.width;
+		if (s.height != null) height = s.height;
+		if (s.marginLeft != null) marginLeft = s.marginLeft;
+		if (s.marginRight != null) marginRight = s.marginRight;
+		if (s.marginTop != null) marginTop = s.marginTop;
+		if (s.marginBottom != null) marginBottom = s.marginBottom;		
+		if (s.textAlign != null) textAlign = s.textAlign;
 	}
 
 	/**

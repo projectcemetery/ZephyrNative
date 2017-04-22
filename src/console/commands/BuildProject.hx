@@ -134,9 +134,16 @@ class BuildProject {
      *  Copy assets to build
      */
     function copyAssets () {
-        Logger.infoStart ("Start copy assets");
+        Logger.infoStart ("Copy assets");
 
-        var destPath = Path.join ([FileUtil.workDir, "build", target, "assets"]);
+        var destPath = "";
+
+        switch (target) {
+            case Target.Android: destPath = Path.join ([FileUtil.workDir, "build", "android", "src", "main", "assets"]);
+            case Target.Web: destPath = Path.join ([FileUtil.workDir, "build", "web", "assets"]);
+            default: throw "Unsupported target";
+        }
+        
         var srcPath = Path.join ([FileUtil.workDir, "assets"]);
         if (!FileSystem.exists (srcPath)) {
             Logger.endInfoSuccess ();
@@ -179,6 +186,7 @@ class BuildProject {
         compileHaxeCode ();
         writeActivityText ();
         writeManifest ();
+        copyAssets ();
         buildInstall (isInstall);                      
     }
 
