@@ -36,22 +36,22 @@ class Style {
 	public var justifyContent : Null<JustifyContent>;
 
 	public var fontName : Null<String>;
-	public var fontSize : Null<Float>;
+	public var fontSize : Null<Unit>;
 	public var color : Null<Int>;
 	public var backgroundColor : Null<FillStyle>;
-	public var borderRadius : Null<Float>;
-	public var borderSize : Null<Float>;
+	public var borderRadius : Null<Unit>;
+	public var borderSize : Null<Unit>;
 	public var borderColor : Null<FillStyle>;
-	public var paddingTop : Null<Float>;
-	public var paddingLeft : Null<Float>;
-	public var paddingRight : Null<Float>;
-	public var paddingBottom : Null<Float>;
-	public var width : Null<Float>;
-	public var height : Null<Float>;
-	public var marginTop : Null<Float>;
-	public var marginLeft : Null<Float>;
-	public var marginRight : Null<Float>;
-	public var marginBottom : Null<Float>;	
+	public var paddingTop : Null<Unit>;
+	public var paddingLeft : Null<Unit>;
+	public var paddingRight : Null<Unit>;
+	public var paddingBottom : Null<Unit>;
+	public var width : Null<Unit>;
+	public var height : Null<Unit>;
+	public var marginTop : Null<Unit>;
+	public var marginLeft : Null<Unit>;
+	public var marginRight : Null<Unit>;
+	public var marginBottom : Null<Unit>;	
 	public var textAlign : Null<TextAlign>;	
 
 	/**
@@ -91,7 +91,7 @@ class Style {
 	 *  Set padding
 	 *  @param v - 
 	 */
-	public function padding( v : Float ) {
+	public function padding( v : Unit ) {
 		this.paddingTop = v;
 		this.paddingLeft = v;
 		this.paddingRight = v;
@@ -102,7 +102,7 @@ class Style {
 	 *  Set margin
 	 *  @param v - 
 	 */
-	public function margin( v : Float ) {
+	public function margin( v : Unit ) {
 		this.marginTop = v;
 		this.marginLeft = v;
 		this.marginRight = v;

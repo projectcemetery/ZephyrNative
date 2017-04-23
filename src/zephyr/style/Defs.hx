@@ -24,22 +24,37 @@ package zephyr.style;
 /**
  *  Unit for geometry
  */
-enum Unit {
-	
+enum Unit {	
+
+	/**
+	 *  Any number
+	 */
+	Number (v : Float);
+
 	/**
 	 *  Pixels
 	 */
-	Pix( v : Float );
+	Px (v : Float);
+
+	/**
+	 *  Font point
+	 */
+	Pt (v : Float);
 
 	/**
 	 *  Percents
 	 */
-	Percent( v : Float );
+	Percent (v : Float);
 
 	/**
-	 *  
+	 *  1% of viewport width
 	 */
-	Em( v : Float );
+	Vw (v : Float);
+
+	/**
+	 *  1% of viewport height
+	 */
+	Vh (v : Float);
 }
 
 enum FillStyle {

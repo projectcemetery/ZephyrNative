@@ -24,18 +24,24 @@ package zephyr.style;
 import zephyr.tags.Tag;
 import zephyr.style.Defs;
 import zephyr.app.NativeView;
+import zephyr.app.INativeApplication;
 
 class Rule {
 	public var id : Int;
-	public var c : CssClass;
+	public var cssClass : CssClass;
 	public var priority : Int;
-	public var s : Style;
+	public var style : Style;
 	public function new() {
 	}
 }
 
 @:access(zephyr.tags.Tag)
 class Engine {
+
+	/**
+	 *  Native application context
+	 */
+	var context : INativeApplication;
 
 	/**
 	 *  All rules
@@ -45,8 +51,9 @@ class Engine {
 	/**
 	 *  Constructor
 	 */
-	public function new() {
+	public function new (context : INativeApplication) {
 		rules = [];
+		this.context = context;
 	}
 
 	/**
@@ -58,13 +65,13 @@ class Engine {
 		tag.style = style;
 		var rules = [];
 		for (rule in this.rules) {
-			if(!ruleMatch(rule.c, tag))
+			if(!ruleMatch(rule.cssClass, tag))
 				continue;
 			rules.push(rule);
 		}
 		rules.sort(sortByPriority);
 		for (rule in rules) {			
-			style.apply(rule.s);
+			style.apply(rule.style);
 		}
 	}
 
@@ -87,12 +94,12 @@ class Engine {
 		if (css.pseudoClass != null) {
 			var pc = ":" + css.pseudoClass;
 			var found = false;
-			for( cc in tag.styles )
+			for (cc in tag.styles)
 				if( cc == pc ) {
 					found = true;
 					break;
 				}
-			if( !found )
+			if (!found)
 				return false;
 		}
 		if (css.className != null) {
@@ -128,28 +135,61 @@ class Engine {
 	 *  Add rules to engine from stylesheet text
 	 *  @param text - 
 	 */
-	public function addRules (text : String) {
-		for( r in new Parser().parseRules(text) ) {
-			var c = r.c;
+	public function addRules (text : String) {		
+		for (r in new Parser().parseRules(text)) {
+			var cssClass = r.c;
 			var imp = r.imp ? 1 : 0;
 			var nids = 0, nothers = 0, nnodes = 0;
-			while( c != null ) {
-				if( c.id != null ) nids++;
-				if( c.node != null ) nnodes++;
-				if( c.pseudoClass != null ) nothers++;
-				if( c.className != null ) nothers++;
-				c = c.parent;
+			while (cssClass != null) {
+				if (cssClass.id != null) nids++;
+				if (cssClass.node != null) nnodes++;
+				if (cssClass.pseudoClass != null) nothers++;
+				if (cssClass.className != null) nothers++;
+				cssClass = cssClass.parent;
 			}
 			var rule = new Rule();
 			rule.id = rules.length;
-			rule.c = r.c;
-			rule.s = r.s;
+			rule.cssClass = r.c;
+			rule.style = r.s;
 			rule.priority = (imp << 24) | (nids << 16) | (nothers << 8) | nnodes;
 			rules.push(rule);
 		}
 	}
 
 	#if android
+	
+	/**
+	 *  Return layout params from style unit
+	 *  @param u - 
+	 *  @return android.widget.LinearLayout.LinearLayout_LayoutParams
+	 */
+	function getLayoutParams (width : Null<Unit>, height : Null<Unit>) : android.widget.LinearLayout.LinearLayout_LayoutParams {
+		var params = new android.widget.LinearLayout.LinearLayout_LayoutParams (-1, -1);
+
+		var screenWidth = context.getScreenWidth ();
+		var screenHeight = context.getScreenHeight ();
+
+		trace (screenWidth, screenHeight);
+
+		if (width != null) {
+			switch (width) {
+				case Px (v) : params.width = Std.int (v);
+				case Vh (v) : params.width = Std.int ((screenWidth / 100) * v);
+				default: {}
+			}
+		}
+
+		if (height != null) {					
+			switch (height) {
+				case Px (v) : params.height = Std.int (v);
+				case Vh (v) : params.height = Std.int ((screenHeight / 100) * v);
+				default: {}
+			}
+		}
+
+		return params;
+	}
+
 	/**
 	 *  Style native view android with tag styles
 	 *  @param view - 
@@ -176,18 +216,20 @@ class Engine {
 			}
 		}
 
-		if (style.height != null) {
-			var lay = new android.widget.LinearLayout.LinearLayout_LayoutParams (-1, 50);
-			trace (Math.round (style.height));
-			view.setLayoutParams (lay);
-		}
+		var params = getLayoutParams (style.width, style.height);
+		view.setLayoutParams (params);
 
 		if (style.backgroundColor != null) {
 			switch (style.backgroundColor) {
 				case FillStyle.Color (color): view.setBackgroundColor (color);
 				default: {}
 			}			
-		}		
+		}
+
+		// align items
+		if (Std.is (tag.parent, Box) {
+			
+		}
 	}
 	#end
 

@@ -23,6 +23,8 @@ package zephyr.app;
 
 #if android
 import haxe.io.Bytes;
+import android.view.Display;
+import android.graphics.Point;
 import android.app.Activity;
 import android.os.Bundle;
 import android.view.Window;
@@ -31,11 +33,35 @@ import zephyr.style.Engine;
 
 @:keep
 class AndroidApplication extends android.app.Activity implements INativeApplication {
+    
+    /**
+     *  Display
+     */
+    var display : Display;
 
     /**
      *  Engine for styling
      */
     var styleEngine : Engine;
+
+    /**
+     *  Show exception on screen
+     *  @param e - 
+     */
+    function showException (e : Dynamic) {
+        var textView = new android.widget.TextView (this);
+
+        if (Std.is (e, java.lang.Exception)) {            
+            var sw = new java.io.StringWriter();
+            var pw = new java.io.PrintWriter(sw);
+            e.printStackTrace(pw);
+            textView.setText (sw.toString());
+        } else {
+            textView.setText (Std.string (e));
+        }
+
+        setContentView (textView);
+    }
 
     /**
      *  On activity create
@@ -45,24 +71,30 @@ class AndroidApplication extends android.app.Activity implements INativeApplicat
     override function onCreate (bundle : Bundle) : Void {
         super.onCreate (bundle);
 
-        styleEngine = new Engine ();
-
         this.requestWindowFeature (Window.FEATURE_NO_TITLE);
         var entryPoint = EntryPointHelper.getEntryPoint();
         var cls = Type.resolveClass (entryPoint);
         if (cls != null) {
             try {
-                var inst : IApplication = cast Type.createEmptyInstance (cls);            
-                inst.onReady (new ApplicationContext (this));
+                display = getWindowManager().getDefaultDisplay();
+                styleEngine = new Engine (this);
+                var context = new ApplicationContext (this);
+                var inst : IApplication = cast Type.createEmptyInstance (cls);                                
+                inst.onReady (context);
             } catch (e : java.lang.Exception) {
-                var textView = new android.widget.TextView (this);
-                var sw = new java.io.StringWriter();
-                var pw = new java.io.PrintWriter(sw);
-                e.printStackTrace(pw);
-                textView.setText (sw.toString());
-                setContentView (textView);
+                showException (e);
             }
+        } else {
+            showException ("Entry point not found");
         }
+    }
+
+    /**
+     *  Add styles to app
+     *  @param text - stylesheet
+     */
+    public function addStyle (text : String) : Void {
+        styleEngine.addRules (text);        
     }
 
     /**
@@ -88,19 +120,31 @@ class AndroidApplication extends android.app.Activity implements INativeApplicat
     }
 
     /**
-     *  Add styles to app
-     *  @param text - stylesheet
-     */
-    public function addStyle (text : String) : Void {
-        styleEngine.addRules (text);
-    }
-
-    /**
      *  Apply view
      *  @param view - 
      */
     public function setView (view : NativeView) : Void {
         setContentView (view);
+    }
+
+    /**
+     *  Return screen width
+     *  @return Float
+     */
+    public inline function getScreenWidth () : Float {
+        var size = new Point();
+        display.getSize(size);
+        return size.x;
+    }
+
+    /**
+     *  Return screen height
+     *  @return Float
+     */
+    public inline function getScreenHeight () : Float {
+        var size = new Point();
+        display.getSize(size);
+        return size.y;
     }
 }
 #end

@@ -53,4 +53,16 @@ interface INativeApplication {
      *  @return AndroidEngine
      */
     public function getEngine () : Engine;
+
+    /**
+     *  Return screen width
+     *  @return Float
+     */
+    public function getScreenWidth () : Float;
+
+    /**
+     *  Return screen height
+     *  @return Float
+     */
+    public function getScreenHeight () : Float;        
 }

@@ -126,56 +126,56 @@ class Parser {
 				}
 			case "padding-top":
 				var i = getVal(v);
-				if( i != null ) { s.paddingTop = i; return true; }
+				if (i != null) { s.paddingTop = i; return true; }
 			case "padding-left":
 				var i = getVal(v);
-				if( i != null ) { s.paddingLeft = i; return true; }
+				if (i != null) { s.paddingLeft = i; return true; }
 			case "padding-right":
 				var i = getVal(v);
-				if( i != null ) { s.paddingRight = i; return true; }
+				if (i != null) { s.paddingRight = i; return true; }
 			case "padding-bottom":
 				var i = getVal(v);
-				if( i != null ) { s.paddingBottom = i; return true; }
+				if (i != null) { s.paddingBottom = i; return true; }
 			case "margin":
 				switch (v) {
-				case VGroup([a, b]):
-					var a = getVal(a), b = getVal(b);
+				case VGroup ([a, b]):
+					var a = getVal (a), b = getVal (b);
 					if( a != null && b != null ) {
 						s.marginTop = s.marginBottom = a;
 						s.marginLeft = s.marginRight = b;
 						return true;
 					}
 				default:
-					var i = getVal(v);
+					var i = getVal (v);
 					if( i != null ) { s.margin(i); return true; }
 				}
 			case "margin-top":
-				var i = getVal(v);
-				if( i != null ) { s.marginTop = i; return true; }
+				var i = getVal (v);
+				if (i != null) { s.marginTop = i; return true; }
 			case "margin-left":
-				var i = getVal(v);
-				if( i != null ) { s.marginLeft = i; return true; }
+				var i = getVal (v);
+				if (i != null) { s.marginLeft = i; return true; }
 			case "margin-right":
-				var i = getVal(v);
-				if( i != null ) { s.marginRight = i; return true; }
+				var i = getVal (v);
+				if (i != null) { s.marginRight = i; return true; }
 			case "margin-bottom":
-				var i = getVal(v);
-				if( i != null ) { s.marginBottom = i; return true; }
+				var i = getVal (v);
+				if (i != null) { s.marginBottom = i; return true; }
 			case "width":
-				var i = getVal(v);
-				if( i != null ) {
+				var i = getVal (v);
+				if (i != null) {
 					s.width = i;
 					return true;
-				}			
+				}				
 			case "height":				
-				var i = getVal(v);				
-				if( i != null ) {
+				var i = getVal (v);				
+				if (i != null) {
 					s.height = i;
 					return true;
 				}			
 			case "background-color":
-				var f = getFill(v);
-				if( f != null ) {
+				var f = getFill (v);
+				if (f != null) {
 					s.backgroundColor = f;
 					return true;
 				}
@@ -183,58 +183,50 @@ class Parser {
 				return applyComposite(["background-color"], v, s);
 			case "font-family":
 				var l = getFontName(v);
-				if( l != null ) {
+				if (l != null) {
 					s.fontName = l;
 					return true;
 				}
 			case "font-size":
-				var i = getUnit(v);
-				if( i != null ) {
-					switch( i ) {
-					case Pix(v):
-						s.fontSize = v;
-					default:
-						notImplemented();
-					}
-					return true;
-				}
+				s.fontSize = getVal(v);
+				return true;
 			case "color":
-				var c = getCol(v);
-				if( c != null ) {
+				var c = getCol (v);
+				if (c != null) {
 					s.color = c;
 					return true;
 				}
 			case "border-radius":
-				var i = getVal(v);
-				if( i != null ) {
+				var i = getVal (v);
+				if (i != null) {
 					s.borderRadius = i;
 					return true;
 				}
 			case "border":
-				if( applyComposite(["border-width", "border-style", "border-color"], v, s) )
+				if (applyComposite(["border-width", "border-style", "border-color"], v, s))
 					return true;
-				if( getIdent(v) == "none" ) {
-					s.borderSize = 0;
+				if (getIdent (v) == "none") {
+					s.borderSize = Px (0);
 					s.borderColor = Transparent;
 					return true;
 				}
 			case "border-width":
-				var i = getVal(v);
-				if( i != null ) {
+				var i = getVal (v);
+				if (i != null) {
 					s.borderSize = i;
 					return true;
 				}
 			case "border-style":
-				if( getIdent(v) == "solid" )
+				if (getIdent (v) == "solid")
 					return true;
 			case "border-color":
-				var c = getFill(v);
-				if( c != null ) {
+				var c = getFill (v);
+				if (c != null) {
 					s.borderColor = c;
 					return true;
 				}			
 			case "text-align":
-				switch( getIdent(v) ) {
+				switch (getIdent(v)) {
 				case "left":
 					s.textAlign = Left;
 					return true;
@@ -252,35 +244,35 @@ class Parser {
 	}
 
 	function applyComposite( names : Array<String>, v : Value, s : Style ) {
-		var vl = switch( v ) {
+		var vl = switch (v) {
 		case VGroup(l): l;
 		default: [v];
 		};
-		while( vl.length > 0 ) {
+		while (vl.length > 0) {
 			var found = false;
-			for( n in names ) {
+			for (n in names) {
 				var count = 1;
-				if( count > vl.length ) count = vl.length;
+				if (count > vl.length) count = vl.length;
 				while( count > 0 ) {
-					var v = (count == 1) ? vl[0] : VGroup(vl.slice(0, count));
-					if( applyStyle(n, v, s) ) {
+					var v = (count == 1) ? vl[0] : VGroup (vl.slice(0, count));
+					if (applyStyle(n, v, s)) {
 						found = true;
-						names.remove(n);
-						for( i in 0...count )
-							vl.shift();
+						names.remove (n);
+						for (i in 0...count)
+							vl.shift ();
 						break;
 					}
 					count--;
 				}
-				if( found ) break;
+				if (found) break;
 			}
-			if( !found )
+			if (!found)
 				return false;
 		}
 		return true;
 	}
 
-	function getGroup<T>( v : Value, f : Value -> Null<T> ) : Null<Array<T>> {
+	function getGroup<T> (v : Value, f : Value -> Null<T>) : Null<Array<T>> {
 		switch(v) {
 		case VGroup(l):
 			var a = [];
@@ -332,40 +324,21 @@ class Parser {
 	 *  @param v - 
 	 *  @return Null<Float>
 	 */
-	function getVal (v : Value) : Null<Float> {
-		var d = new android.text.TextPaint ();
-		var bounds = new android.graphics.Rect ();
-		d.getTextBounds ("F", 0, 1, bounds);
+	function getVal (v : Value) : Null<Unit> {		
 		return switch( v ) {
 		case VUnit (f, u):
 			switch (u) {
-			case "px": f;
-			case "pt": f * 4 / 3;
-			case "em" : f * bounds.height ();
-			default: null;
+				case "px": Unit.Px (f);
+				case "pt": Unit.Pt (f);
+				case "vw": Unit.Vw (f);
+				case "vh": Unit.Vh (f);
+				//case "pt": f * 4 / 3;
+				default: null;
 			}
 		case VInt(v):
-			v;
+			Unit.Number (v);
 		case VFloat(v):
-			v;
-		default:
-			null;
-		};
-	}
-
-	function getUnit( v : Value ) : Null<Unit> {
-		return switch( v ) {
-		case VUnit(f, u):
-			switch( u ) {
-			case "px": Pix(f);
-			case "pt": Pix(f * 4 / 3);
-			case "%": Percent(f / 100);
-			default: null;
-			}
-		case VInt(v):
-			Pix(v);
-		case VFloat(v):
-			Pix(v);
+			Unit.Number (v);
 		default:
 			null;
 		};
@@ -446,7 +419,18 @@ class Parser {
 			default: null;
 			}
 		case VCall("rgba", [r, g, b, a]):
-			var r = getVal(r), g = getVal(g), b = getVal(b), a = getVal(a);
+			inline function getFloat (v : Unit) : Null<Float> {
+				switch (v) {
+					case Number (f): return f;
+					default: return null;
+				}
+			}
+
+			var r = getFloat (getVal(r));
+			var g = getFloat (getVal(g));
+			var b = getFloat (getVal(b));
+			var a = getFloat (getVal(a));
+			
 			inline function conv(k:Float) {
 				var v = Std.int(k * 255);
 				if( v < 0 ) v = 0;

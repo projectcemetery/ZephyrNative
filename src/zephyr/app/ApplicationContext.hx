@@ -57,10 +57,11 @@ class ApplicationContext {
     public function new (owner : INativeApplication) {
         this.owner = owner;
         controllers = new Map<String, Controller> ();
-        // Apply default style
-        var asset = getAsset ("default.css");
+
+        // Apply default style        
+        var asset = getAsset ("default.css");        
         addStyle (asset.toString ());
-    }
+    }    
 
     /**
      *  Register controller
@@ -108,7 +109,7 @@ class ApplicationContext {
      *  @param text - stylesheet
      */
     public inline function addStyle (text : String) : Void {
-        owner.addStyle (text);
+        owner.addStyle (text);        
     }
 
     /**
@@ -117,6 +118,22 @@ class ApplicationContext {
      */
     public function getEngine () : Engine {
         return owner.getEngine ();
+    }
+
+    /**
+     *  Return screen width
+     *  @return Float
+     */
+    public inline function getScreenWidth () : Float {
+        return owner.getScreenWidth ();
+    }
+
+    /**
+     *  Return screen height
+     *  @return Float
+     */
+    public inline function getScreenHeight () : Float {
+        return owner.getScreenHeight ();
     }
 
     #if android

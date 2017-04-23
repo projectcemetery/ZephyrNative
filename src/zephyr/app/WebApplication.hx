@@ -58,7 +58,7 @@ class WebApplication implements INativeApplication {
      *  Constructor
      */
     public function new () {
-        styleEngine = new Engine ();
+        styleEngine = new Engine (this);
     }
 
     /**
@@ -85,6 +85,14 @@ class WebApplication implements INativeApplication {
     }
 
     /**
+     *  Return engine for styling native views
+     *  @return AndroidEngine
+     */
+    public function getEngine () : Engine {
+        return styleEngine;
+    }
+
+    /**
      *  Apply view
      *  @param view - 
      */
@@ -93,11 +101,19 @@ class WebApplication implements INativeApplication {
     }
 
     /**
-     *  Return engine for styling native views
-     *  @return AndroidEngine
+     *  Return screen width
+     *  @return Float
      */
-    public function getEngine () : Engine {
-        return styleEngine;
+    public inline function getScreenWidth () : Float {
+        return 0;
+    }
+
+    /**
+     *  Return screen height
+     *  @return Float
+     */
+    public inline function getScreenHeight () : Float {
+        return 0;
     }
 }
 #end
