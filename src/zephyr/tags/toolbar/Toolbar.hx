@@ -27,11 +27,11 @@ import android.widget.LinearLayout;
 
 #if web
 import js.Browser;
+import zephyr.tags.TagBuilder.*;
 #end
 
 import zephyr.app.ApplicationContext;
 import zephyr.app.NativeView;
-import zephyr.tags.TagBuilder.*;
 
 /**
  *  Tag for Toolbar
@@ -40,7 +40,7 @@ class Toolbar extends Tag {
     public inline static var tagName = "toolbar";
 
     /**
-     *  Options for toolbar rendering
+     *  Options for toolbar
      */
     var options : ToolbarOptions;
 
@@ -51,7 +51,7 @@ class Toolbar extends Tag {
     override function renderAndroid (context : ApplicationContext) : NativeView {
         var engine = context.getEngine ();
         var layout = new LinearLayout (context.getAndroidActivity ());
-        engine.styleView (layout, this);        
+        engine.styleView (layout, this);
 
         if (options.title != null) {
             var titleView = options.title.render (context);
@@ -97,6 +97,7 @@ class Toolbar extends Tag {
 
         if (options.title != null) {
             // Append style
+            options.title.parent = this;
             options.title.styles.push ("title");
         }
     } 

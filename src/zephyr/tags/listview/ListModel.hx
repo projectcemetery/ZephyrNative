@@ -19,92 +19,27 @@
  * THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
-package zephyr.style;
+package zephyr.tags.listview;
 
-/**
- *  Unit for geometry
- */
-enum Unit {	
+class ListModel<T> {
 
-	/**
-	 *  Any number
-	 */
-	Number (v : Float);
+    var items : Array<T>;
 
-	/**
-	 *  Pixels
-	 */
-	Px (v : Float);
+    public var length (get, never) : Int;
+    public function get_length () : Int {
+        return items.length;
+    }
 
-	/**
-	 *  Font point
-	 */
-	Pt (v : Float);
+    public function new (?array : Array<T>) {        
+        items = if (array != null) array else new Array<T> ();
+    }
 
-	/**
-	 *  Percents
-	 */
-	Percent (v : Float);
+    public function iterator () : Iterator<T> {
+        return items.iterator ();
+    }   
 
-	/**
-	 *  1% of viewport width
-	 */
-	Vw (v : Float);
-
-	/**
-	 *  1% of viewport height
-	 */
-	Vh (v : Float);
-}
-
-enum FillStyle {
-	Transparent;
-	Color( c : Int );
-	Gradient( a : Int, b : Int, c : Int, d : Int );
-}
-
-
-enum TextAlign {
-	Left;
-	Right;
-	Center;
-}
-
-/**
- *  Direction of flex component
- */
-enum FlexDirection {
-	Row;
-	Column;
-}
-
-/**
- *  Flex align type
- */
-enum FlexAlign {
-	FlexStart;
-	FlexEnd;
-	Center;
-}
-
-/**
- *  Content justify
- */
-enum JustifyContent {
-	FlexStart;
-	FlexEnd;
-}
-
-class CssClass {
-	public var parent : Null<CssClass>;
-	public var node : Null<String>;
-	public var className : Null<String>;
-	public var pseudoClass : Null<String>;
-	public var id : Null<String>;
-
-	/**
-	 *  Constructor
-	 */
-	public function new() {
-	}
+    @:arrayAccess
+    public inline function get(key : Int) : T {
+        return items[key];
+    } 
 }

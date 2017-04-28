@@ -35,6 +35,11 @@ class Style {
 	 */
 	public var justifyContent : Null<JustifyContent>;
 
+	/**
+	 *  Childs align
+	 */
+	public var alignItems : Null<FlexAlign>;
+
 	public var fontName : Null<String>;
 	public var fontSize : Null<Unit>;
 	public var color : Null<Int>;
@@ -52,7 +57,7 @@ class Style {
 	public var marginLeft : Null<Unit>;
 	public var marginRight : Null<Unit>;
 	public var marginBottom : Null<Unit>;	
-	public var textAlign : Null<TextAlign>;	
+	public var textAlign : Null<TextAlign>;
 
 	/**
 	 *  Constructor
@@ -67,6 +72,7 @@ class Style {
 	public function apply( s : Style ) {
 		if (s.flexDirection != null) flexDirection = s.flexDirection;
 		if (s.justifyContent != null) justifyContent = s.justifyContent;
+		if (s.alignItems != null) alignItems = s.alignItems;
 		if (s.fontName != null) fontName = s.fontName;
 		if (s.fontSize != null) fontSize = s.fontSize;
 		if (s.color != null) color = s.color;

@@ -19,92 +19,23 @@
  * THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
-package zephyr.style;
+package zephyr.tags.listview;
+
+import zephyr.tags.TagOptions;
 
 /**
- *  Unit for geometry
+ *  Options for TextView constructor
  */
-enum Unit {	
+typedef ListViewOptions<T> = {
+    > TagOptions,
 
-	/**
-	 *  Any number
-	 */
-	Number (v : Float);
+    /**
+     *  Data Source
+     */
+    var dataSource : AbstractListModel<T>;
 
-	/**
-	 *  Pixels
-	 */
-	Px (v : Float);
-
-	/**
-	 *  Font point
-	 */
-	Pt (v : Float);
-
-	/**
-	 *  Percents
-	 */
-	Percent (v : Float);
-
-	/**
-	 *  1% of viewport width
-	 */
-	Vw (v : Float);
-
-	/**
-	 *  1% of viewport height
-	 */
-	Vh (v : Float);
-}
-
-enum FillStyle {
-	Transparent;
-	Color( c : Int );
-	Gradient( a : Int, b : Int, c : Int, d : Int );
-}
-
-
-enum TextAlign {
-	Left;
-	Right;
-	Center;
-}
-
-/**
- *  Direction of flex component
- */
-enum FlexDirection {
-	Row;
-	Column;
-}
-
-/**
- *  Flex align type
- */
-enum FlexAlign {
-	FlexStart;
-	FlexEnd;
-	Center;
-}
-
-/**
- *  Content justify
- */
-enum JustifyContent {
-	FlexStart;
-	FlexEnd;
-}
-
-class CssClass {
-	public var parent : Null<CssClass>;
-	public var node : Null<String>;
-	public var className : Null<String>;
-	public var pseudoClass : Null<String>;
-	public var id : Null<String>;
-
-	/**
-	 *  Constructor
-	 */
-	public function new() {
-	}
+    /**
+     *  Function for render list item
+     */
+    var renderItem : T -> Tag;
 }

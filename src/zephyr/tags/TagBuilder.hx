@@ -25,6 +25,7 @@ import zephyr.tags.box.*;
 import zephyr.tags.button.*;
 import zephyr.tags.textview.*;
 import zephyr.tags.toolbar.*;
+import zephyr.tags.listview.*;
 import zephyr.tags.TagOptions;
 
 /**
@@ -63,10 +64,15 @@ class TagBuilder {
         return new Toolbar (options);
     }
 
-  /*  public static function listview<T> (?options : ListViewOptions<T>) : Listview<T> {
-        return new Listview (options);
-    }    
-*/
+    /**
+     *  Add listview
+     *  @param options - 
+     *  @return ListView<T>
+     */
+    public static function listview<T> (?options : ListViewOptions<T>) : ListView<T> {
+        return new ListView (options);
+    }
+
     /**
      *  Create TextView tag
      *  @param options - 

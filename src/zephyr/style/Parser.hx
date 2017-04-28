@@ -111,6 +111,19 @@ class Parser {
 						return true;
 					default:
 				}
+			case "align-items":
+				switch (getIdent(v)) {
+					case "flex-start":
+						s.alignItems = FlexStart;
+						return true;
+					case "flex-end":
+						s.alignItems = FlexEnd;
+						return true;
+					case "center":
+						s.alignItems = Center;
+						return true;
+					default:
+				}
 			case "padding":
 				switch (v) {
 				case VGroup([a, b]):

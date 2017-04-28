@@ -164,7 +164,7 @@ class Engine {
 	 *  @return android.widget.LinearLayout.LinearLayout_LayoutParams
 	 */
 	function getLayoutParams (width : Null<Unit>, height : Null<Unit>) : android.widget.LinearLayout.LinearLayout_LayoutParams {
-		var params = new android.widget.LinearLayout.LinearLayout_LayoutParams (-1, -1);
+		var params = new android.widget.LinearLayout.LinearLayout_LayoutParams (-1, -2);
 
 		var screenWidth = context.getScreenWidth ();
 		var screenHeight = context.getScreenHeight ();
@@ -210,14 +210,13 @@ class Engine {
 			if (style.flexDirection != null) {
 				switch (style.flexDirection) {
 					case FlexDirection.Row: layout.setOrientation (0);
-					case FlexDirection.Column: layout.setOrientation (1);					
+					case FlexDirection.Column: layout.setOrientation (1);
 					default: {}
 				}
 			}
 		}
 
 		var params = getLayoutParams (style.width, style.height);
-		view.setLayoutParams (params);
 
 		if (style.backgroundColor != null) {
 			switch (style.backgroundColor) {
@@ -227,9 +226,38 @@ class Engine {
 		}
 
 		// align items
-		if (Std.is (tag.parent, Box) {
-			
+		if (tag.parent != null && tag.parent.style.alignItems != null) {
+			switch (tag.parent.style.alignItems) {
+				case Center: {										
+					params.gravity = 17;
+				}
+				default: {}
+			}
 		}
+		trace (params.width, params.height);
+		view.setLayoutParams (params);
+				
+		if (Std.is (view, android.widget.TextView)) {
+			var textView  = cast (view, android.widget.TextView);		
+			if (textView != null) {
+				if (tag.style.fontSize != null) {
+					switch (tag.style.fontSize) {
+						case Pt (v): {
+							textView.setTextSize (v);
+						}
+						default: {}
+					}
+				}
+				if (tag.style.color != null) {
+					if ((tag.style.color & 0xFF000000) > 0) {
+						textView.setTextColor (tag.style.color);
+					} else {
+						textView.setTextColor (tag.style.color + 0xFF000000);
+					}
+				}
+			}
+		}
+
 	}
 	#end
 

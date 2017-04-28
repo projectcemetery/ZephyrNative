@@ -48,7 +48,7 @@ class Tag extends TagContainer {
      /**
       *  Css style
       */
-     public var style : Style;
+     public var style : Style = new Style ();
 
      /**
       *  Parent tag
