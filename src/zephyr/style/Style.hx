@@ -43,7 +43,8 @@ class Style {
 	public var fontName : Null<String>;
 	public var fontSize : Null<Unit>;
 	public var color : Null<Int>;
-	public var backgroundColor : Null<FillStyle>;
+	public var backgroundColor : Null<FillStyle>;	
+	public var backgroundImage : Null<String>;
 	public var borderRadius : Null<Unit>;
 	public var borderSize : Null<Unit>;
 	public var borderColor : Null<FillStyle>;

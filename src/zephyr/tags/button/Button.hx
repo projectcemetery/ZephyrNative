@@ -47,7 +47,17 @@ class Button extends Tag {
      *  Render for android
      */
     override function renderAndroid (context : ApplicationContext) : NativeView {
-        throw "Not implemented";
+        var engine = context.getEngine ();
+        var button = new android.widget.Button (context.getAndroidActivity ());
+        
+        if (options != null) {
+            if (options.text != null) {
+                button.setText (options.text);                
+            }
+        }
+
+        engine.styleView (button, this);
+        return button;
     }
     #end
 

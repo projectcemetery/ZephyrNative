@@ -216,14 +216,7 @@ class Engine {
 			}
 		}
 
-		var params = getLayoutParams (style.width, style.height);
-
-		if (style.backgroundColor != null) {
-			switch (style.backgroundColor) {
-				case FillStyle.Color (color): view.setBackgroundColor (color);
-				default: {}
-			}			
-		}
+		var params = getLayoutParams (style.width, style.height);		
 
 		// align items
 		if (tag.parent != null && tag.parent.style.alignItems != null) {
@@ -234,7 +227,7 @@ class Engine {
 				default: {}
 			}
 		}
-		trace (params.width, params.height);
+		
 		view.setLayoutParams (params);
 				
 		if (Std.is (view, android.widget.TextView)) {
@@ -256,6 +249,19 @@ class Engine {
 					}
 				}
 			}
+		}
+
+		// Background color
+		if (style.backgroundColor != null) {
+			switch (style.backgroundColor) {
+				case FillStyle.Color (color): view.setBackgroundColor (color);
+				default: {}
+			}			
+		}
+
+		// Background image
+		if (style.backgroundImage != null) {
+			var asset = context.getAsset (style.backgroundImage);
 		}
 
 	}
