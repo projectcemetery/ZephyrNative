@@ -19,51 +19,30 @@
  * THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
-package zephyr.app;
-
-import haxe.io.Bytes;
-import zephyr.style.Engine;
-import zephyr.asset.Asset;
+package zephyr.asset;
 
 /**
- *  Interface to native application. Like: Activity
+ *  Asset types
  */
-interface INativeApplication {
+enum AssetType {
 
     /**
-     *  Apply view
-     *  @param view - 
+     *  Unknown binary asset
      */
-    public function setView (view : NativeView) : Void;
+    Binary;
 
     /**
-     *  Get asset by name
-     *  @param name - asset name
-     *  @return Bytes
+     *  Text asset
      */
-    public function getAsset (name : String) : Asset;    
+    Text (v : TextType);
 
     /**
-     *  Add styles to app
-     *  @param text - stylesheet
+     *  Image asset
      */
-    public function addStyle (text : String) : Void;
-    
-    /**
-     *  Return engine for styling native views
-     *  @return AndroidEngine
-     */
-    public function getEngine () : Engine;
+    Raster (v : RasterType);
 
     /**
-     *  Return screen width
-     *  @return Float
+     *  Vector asset
      */
-    public function getScreenWidth () : Float;
-
-    /**
-     *  Return screen height
-     *  @return Float
-     */
-    public function getScreenHeight () : Float;        
+    Vector (v : VectorType);
 }

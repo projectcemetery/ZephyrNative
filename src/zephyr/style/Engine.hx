@@ -25,6 +25,12 @@ import zephyr.tags.Tag;
 import zephyr.style.Defs;
 import zephyr.app.NativeView;
 import zephyr.app.INativeApplication;
+import zephyr.asset.AssetType;
+
+#if android
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.BitmapFactory;
+#end
 
 class Rule {
 	public var id : Int;
@@ -191,15 +197,11 @@ class Engine {
 	}
 
 	/**
-	 *  Style native view android with tag styles
+	 *  Set layout
 	 *  @param view - 
 	 *  @param tag - 
 	 */
-	public function styleView (view : NativeView, tag : Tag) {
-		applyClasses (tag);
-		trace (tag.name);
-		trace (tag.style);
-
+	function setLayout (view : NativeView, tag : Tag) {
 		var style = tag.style;
 		var layout : android.widget.LinearLayout = null;
 		if (Std.is (view, android.widget.LinearLayout)) {
@@ -229,7 +231,15 @@ class Engine {
 		}
 		
 		view.setLayoutParams (params);
-				
+	}
+
+	/**
+	 *  Set font size, name, color
+	 *  @param view - 
+	 *  @param tag - 
+	 */
+	function setFont (view : NativeView, tag : Tag) {		
+		// TODO: font name
 		if (Std.is (view, android.widget.TextView)) {
 			var textView  = cast (view, android.widget.TextView);		
 			if (textView != null) {
@@ -250,20 +260,61 @@ class Engine {
 				}
 			}
 		}
+	}
 
-		// Background color
+	/**
+	 *  Set background color
+	 *  @param view - 
+	 *  @param tag - 
+	 */
+	function setBackgroundColor (view : NativeView, tag : Tag) {
+		var style = tag.style;
 		if (style.backgroundColor != null) {
 			switch (style.backgroundColor) {
 				case FillStyle.Color (color): view.setBackgroundColor (color);
 				default: {}
 			}			
 		}
+	}
 
+	/**
+	 *  Set background image
+	 *  @param view - 
+	 *  @param tag - 
+	 */
+	function setBackgroundImage (view : NativeView, tag : Tag) {
+		var style = tag.style;
 		// Background image
 		if (style.backgroundImage != null) {
 			var asset = context.getAsset (style.backgroundImage);
+			switch (asset.type) {
+				case AssetType.Raster (v): {
+					var bytes = asset.data.getData ();
+					var draw = new BitmapDrawable (BitmapFactory.decodeByteArray (bytes, 0, bytes.length));
+					view.setBackground (draw);
+				}
+				case AssetType.Vector (v): {
+					//
+				}
+				default: {}
+			}
 		}
+	}
 
+	/**
+	 *  Style native view android with tag styles
+	 *  @param view - 
+	 *  @param tag - 
+	 */
+	public function styleView (view : NativeView, tag : Tag) {
+		applyClasses (tag);
+		trace (tag.name);
+		trace (tag.style);
+
+		setLayout (view, tag);
+		setFont (view, tag);
+		setBackgroundColor (view, tag);
+		setBackgroundImage (view, tag);
 	}
 	#end
 

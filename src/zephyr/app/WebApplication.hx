@@ -22,7 +22,7 @@
 package zephyr.app;
 
 #if web
-import haxe.io.Bytes;
+import zephyr.asset.Asset;
 import js.Browser;
 import zephyr.app.NativeView;
 import zephyr.app.EntryPointHelper;
@@ -66,7 +66,7 @@ class WebApplication implements INativeApplication {
      *  @param name - asset name
      *  @return Bytes
      */
-    public function getAsset (name : String) : Bytes {
+    public function getAsset (name : String) : Asset {
         var hostname = Browser.location.hostname;
         if (hostname == "") throw "Need launch from server";
         var data = haxe.Http.requestUrl('/assets/${name}');

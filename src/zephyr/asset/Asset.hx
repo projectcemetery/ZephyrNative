@@ -19,51 +19,53 @@
  * THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
-package zephyr.app;
+package zephyr.asset;
 
 import haxe.io.Bytes;
-import zephyr.style.Engine;
-import zephyr.asset.Asset;
+import haxe.io.Path;
 
 /**
- *  Interface to native application. Like: Activity
+ *  Asset info and data
  */
-interface INativeApplication {
+class Asset {
 
     /**
-     *  Apply view
-     *  @param view - 
+     *  Asset type
      */
-    public function setView (view : NativeView) : Void;
+    public var type : AssetType;
 
     /**
-     *  Get asset by name
-     *  @param name - asset name
-     *  @return Bytes
+     *  Asset data
      */
-    public function getAsset (name : String) : Asset;    
+    public var data : Bytes;
 
     /**
-     *  Add styles to app
-     *  @param text - stylesheet
+     *  Get asset type by file name
+     *  @param name - 
      */
-    public function addStyle (text : String) : Void;
-    
-    /**
-     *  Return engine for styling native views
-     *  @return AndroidEngine
-     */
-    public function getEngine () : Engine;
+    public static function getAssetType (fileName : String) : AssetType {
+        var ext = Path.extension (fileName);
+        switch (ext) {
+            case "png": return AssetType.Raster (RasterType.Png);
+            case "jpg": return AssetType.Raster (RasterType.Jpeg);
+            case "txt": return AssetType.Text (TextType.Txt);
+            case "json": return AssetType.Text (TextType.Json);
+            case "xml": return AssetType.Text (TextType.Xml);
+            case "svg": return AssetType.Vector (VectorType.Svg);
+            case "pdf": return AssetType.Vector (VectorType.Pdf);
+            default: {}
+        }
+
+        return AssetType.Binary;
+    }
 
     /**
-     *  Return screen width
-     *  @return Float
+     *  Constructor
+     *  @param type - asset type
+     *  @param data - asset bytes data
      */
-    public function getScreenWidth () : Float;
-
-    /**
-     *  Return screen height
-     *  @return Float
-     */
-    public function getScreenHeight () : Float;        
+    public function new (type : AssetType, data : Bytes) {
+        this.type = type;
+        this.data = data;
+    }
 }

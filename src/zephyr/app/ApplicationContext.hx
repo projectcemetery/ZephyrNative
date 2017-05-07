@@ -25,7 +25,7 @@ package zephyr.app;
 import android.app.Activity;
 #end
 
-import haxe.io.Bytes;
+import zephyr.asset.Asset;
 import zephyr.controller.Controller;
 import zephyr.tags.Tag;
 import zephyr.style.Engine;
@@ -60,7 +60,7 @@ class ApplicationContext {
 
         // Apply default style        
         var asset = getAsset ("default.css");        
-        addStyle (asset.toString ());
+        addStyle (asset.data.toString ());
     }    
 
     /**
@@ -100,7 +100,7 @@ class ApplicationContext {
      *  @param name - asset name
      *  @return Bytes
      */
-    public inline function getAsset (name : String) : Bytes {
+    public inline function getAsset (name : String) : Asset {
         return owner.getAsset (name);
     }
 

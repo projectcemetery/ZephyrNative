@@ -30,6 +30,7 @@ import android.os.Bundle;
 import android.view.Window;
 import zephyr.app.NativeView;
 import zephyr.style.Engine;
+import zephyr.asset.Asset;
 
 @:keep
 class AndroidApplication extends android.app.Activity implements INativeApplication {
@@ -110,13 +111,15 @@ class AndroidApplication extends android.app.Activity implements INativeApplicat
      *  @param name - asset name
      *  @return Bytes
      */
-    public function getAsset (name : String) : Bytes {        
+    public function getAsset (name : String) : Asset {
         var input = getAssets ().open (name);
         var size = input.available ();
         var buffer = new java.NativeArray<java.types.Int8> (size);
         input.read (buffer);
         input.close ();
-        return Bytes.ofData (buffer);
+        var data = Bytes.ofData (buffer);
+        var tp = Asset.getAssetType (name);
+        return new Asset (tp, data);
     }
 
     /**
