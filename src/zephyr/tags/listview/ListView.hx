@@ -71,7 +71,6 @@ class ListViewAdapter<T> extends BaseAdapter {
      */
     @:overload
     override public function getCount() : Int {
-        trace (options.dataSource.length);
         return options.dataSource.length;
     }
     

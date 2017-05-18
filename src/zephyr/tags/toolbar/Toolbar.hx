@@ -53,9 +53,19 @@ class Toolbar extends Tag {
         var layout = new LinearLayout (context.getAndroidActivity ());
         engine.styleView (layout, this);
 
+        if (options.left != null) {
+            var widget = options.left.render (context);
+            layout.addView (widget);
+        }
+
         if (options.title != null) {
             var titleView = options.title.render (context);
             layout.addView (titleView);
+        }
+
+        if (options.right != null) {
+            var widget = options.right.render (context);
+            layout.addView (widget);
         }
 
         return layout;        

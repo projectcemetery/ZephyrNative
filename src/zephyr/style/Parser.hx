@@ -124,6 +124,9 @@ class Parser {
 						return true;
 					default:
 				}
+			case "background-image":
+				var img = getAsset(v);
+				s.backgroundImage = img;
 			case "padding":
 				switch (v) {
 				case VGroup([a, b]):
@@ -482,21 +485,18 @@ class Parser {
 		};
 	}
 
-	/*function getImage( v : Value ) {
-		switch( v ) {
+	/**
+	 *  Get asset data: path, url, string data
+	 *  @param v - asset data
+	 */
+	function getAsset (v : Value) {
+		switch (v) {
 		case VCall("url", [VString(url)]):
-			if( StringTools.startsWith(url, "res://") )
-				return hxd.res.Loader.currentInstance.load(url.substr(6)).toImage().getPixels();
-			if( !StringTools.startsWith(url, "data:image/png;base64,") )
-				return null;
-			url = url.substr(22);
-			if( StringTools.endsWith(url, "=") ) url = url.substr(0, -1);
-			var bytes = haxe.crypto.Base64.decode(url);
-			return hxd.res.Any.fromBytes("icon",bytes).toImage().getPixels();
+			return url;
 		default:
 			return null;
 		}
-	}*/
+	}
 
 	// ---------------------- generic parsing --------------------
 

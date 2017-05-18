@@ -59,7 +59,7 @@ class ApplicationContext {
         controllers = new Map<String, Controller> ();
 
         // Apply default style        
-        var asset = getAsset ("default.css");        
+        var asset = getAsset ("/assets/default.css");        
         addStyle (asset.data.toString ());
     }    
 

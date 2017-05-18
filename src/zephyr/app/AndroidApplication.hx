@@ -112,13 +112,19 @@ class AndroidApplication extends android.app.Activity implements INativeApplicat
      *  @return Bytes
      */
     public function getAsset (name : String) : Asset {
-        var input = getAssets ().open (name);
+        var prefix = "/assets/";
+        var path = name;
+		if (name.indexOf (prefix) > -1) {
+            path = name.substr (prefix.length);
+        }		
+
+        var input = getAssets ().open (path);
         var size = input.available ();
         var buffer = new java.NativeArray<java.types.Int8> (size);
         input.read (buffer);
         input.close ();
         var data = Bytes.ofData (buffer);
-        var tp = Asset.getAssetType (name);
+        var tp = Asset.getAssetType (path);
         return new Asset (tp, data);
     }
 

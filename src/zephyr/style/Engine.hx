@@ -175,8 +175,6 @@ class Engine {
 		var screenWidth = context.getScreenWidth ();
 		var screenHeight = context.getScreenHeight ();
 
-		trace (screenWidth, screenHeight);
-
 		if (width != null) {
 			switch (width) {
 				case Px (v) : params.width = Std.int (v);
@@ -282,12 +280,12 @@ class Engine {
 	 *  @param view - 
 	 *  @param tag - 
 	 */
-	function setBackgroundImage (view : NativeView, tag : Tag) {
+	function setBackgroundImage (view : NativeView, tag : Tag) {		
 		var style = tag.style;
 		// Background image
 		if (style.backgroundImage != null) {
 			var asset = context.getAsset (style.backgroundImage);
-			switch (asset.type) {
+			switch (asset.type) {				
 				case AssetType.Raster (v): {
 					var bytes = asset.data.getData ();
 					var draw = new BitmapDrawable (BitmapFactory.decodeByteArray (bytes, 0, bytes.length));
@@ -308,8 +306,7 @@ class Engine {
 	 */
 	public function styleView (view : NativeView, tag : Tag) {
 		applyClasses (tag);
-		trace (tag.name);
-		trace (tag.style);
+		trace (tag.name, tag.id, tag.style);		
 
 		setLayout (view, tag);
 		setFont (view, tag);
